@@ -19,3 +19,10 @@ export function useThemeColor(
     return Colors[theme][colorName];
   }
 }
+export interface ThemeProps {
+  light?: string;
+  dark?: string;
+}
+
+// Ensure it's exported properly
+
