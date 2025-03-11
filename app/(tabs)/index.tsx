@@ -14,7 +14,6 @@ export type TabParamList = {
   Profile: undefined;
   Login: undefined;
   SignUp:undefined;
-
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
