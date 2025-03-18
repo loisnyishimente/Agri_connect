@@ -68,7 +68,7 @@ const TabNavigator = () => {
           }
           return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#4CAF50',
+        tabBarActiveTintColor: '#026338',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
         tabBarStyle: {

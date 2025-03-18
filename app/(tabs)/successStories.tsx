@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert ,TextInput} from 'react-native';
+import { 
+  View, Text, StyleSheet, FlatList, TouchableOpacity, 
+  Image, Alert, TextInput, ImageSourcePropType 
+} from 'react-native';
 
+// Import local images
+import Story1 from '../../Images/profile.png';
+import Story2 from '../../Images/profile.png';
+import Story3 from '../../Images/profile.png';
 type SuccessStory = {
   id: string;
   title: string;
   description: string;
   date: string;
-  imageUrl: string;
+  imageUrl: string | ImageSourcePropType; // Supports both local and remote images
 };
 
 const SuccessStoriesScreen = () => {
@@ -16,21 +23,21 @@ const SuccessStoriesScreen = () => {
       title: 'Tomato Yield Boost',
       description: 'After learning about crop rotation techniques, John increased his tomato yield by 50%.',
       date: '2025-03-18',
-      imageUrl: 'https://via.placeholder.com/150', // Example placeholder image
+      imageUrl: Story1, // Local image
     },
     {
       id: '2',
       title: 'Effective Pest Control',
       description: 'Using integrated pest management strategies, Jane saved her crops from a major pest outbreak.',
       date: '2025-03-17',
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: Story2, // Local image
     },
     {
       id: '3',
       title: 'Increased Wheat Production',
       description: 'With proper irrigation methods learned from the platform, Ahmed doubled his wheat production.',
       date: '2025-03-16',
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: Story3, // Remote image
     },
   ]);
 
@@ -42,12 +49,12 @@ const SuccessStoriesScreen = () => {
       return;
     }
 
-    const newSuccessStory = {
+    const newSuccessStory: SuccessStory = {
       id: (stories.length + 1).toString(),
       title: newStory,
       description: 'No description provided.',
       date: new Date().toLocaleDateString(),
-      imageUrl: 'https://via.placeholder.com/150', // Example placeholder image
+      imageUrl: Story3, // Default remote image
     };
 
     setStories([newSuccessStory, ...stories]);
@@ -56,7 +63,10 @@ const SuccessStoriesScreen = () => {
 
   const renderStoryItem = ({ item }: { item: SuccessStory }) => (
     <View style={styles.storyItem}>
-      <Image source={{ uri: item.imageUrl }} style={styles.storyImage} />
+      <Image
+        source={typeof item.imageUrl === 'string' ? { uri: item.imageUrl } : item.imageUrl}
+        style={styles.storyImage}
+      />
       <View style={styles.storyDetails}>
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyDate}>{item.date}</Text>
@@ -64,10 +74,7 @@ const SuccessStoriesScreen = () => {
 
         <TouchableOpacity
           style={styles.viewDetailsButton}
-          onPress={() => {
-            // Navigate to Story Detail Screen (if needed)
-            alert(`Viewing details of story: ${item.title}`);
-          }}
+          onPress={() => alert(`Viewing details of story: ${item.title}`)}
         >
           <Text style={styles.viewDetailsButtonText}>View Full Story</Text>
         </TouchableOpacity>
@@ -123,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
   },
   viewDetailsButton: {
     marginTop: 15,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

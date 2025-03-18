@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   viewDetailsButton: {
     marginTop: 15,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

@@ -4,7 +4,7 @@ import Login from "../../app/(tabs)/Login";
 import Signup from "../../app/(tabs)/SignUp";
 import CommunityChatScreen from "../../app/(tabs)/discussionChat";
 import AdminLogin from "../../app/(tabs)/loginAsAdmin";
-import ChatDetailScreen from "../../app/(tabs)/chatDetailScreen"
+import ChatDetailScreen from "../../app/(tabs)/chatDetailScreen";
 import TabNavigator from "../navigation/TabNavigator";
 
 
@@ -13,7 +13,7 @@ export type StackParamList = {
   Login: undefined;
   SignUp: undefined;
   discussionChat:undefined;
-  chatDetailScreen:undefined;
+  chatDetailScreen: { chatId: string; chatName: string }; 
   loginAsAdmin:undefined;
 };
 

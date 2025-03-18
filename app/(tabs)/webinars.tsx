@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   categoryButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 4,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   joinButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     paddingVertical: 8,
     borderRadius: 4,
     alignItems: 'center',

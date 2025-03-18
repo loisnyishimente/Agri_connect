@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, ImageSourcePropType } from 'react-native';
+
+import tomatoSeeds from '../../Images/successtory.png';
+import tractor from '../../Images/successtory.png';
+import npkFertilizer from '../../Images/successtory.png';
 
 type Product = {
   id: string;
   title: string;
   description: string;
   price: string;
-  imageUrl: string;
+  imageUrl: string | ImageSourcePropType;
   category: string;
   seller: string;
 };
@@ -19,7 +23,7 @@ const MarketPlaceScreen = () => {
       title: 'Organic Tomato Seeds',
       description: 'High-quality organic tomato seeds for your farm.',
       price: '$10.00',
-      imageUrl: 'https://via.placeholder.com/100',
+      imageUrl: tomatoSeeds, 
       category: 'Seeds',
       seller: 'AgriSeeds Co.',
     },
@@ -28,7 +32,7 @@ const MarketPlaceScreen = () => {
       title: 'Tractor - Model X',
       description: 'Efficient tractor for large-scale farming.',
       price: '$25,000.00',
-      imageUrl: 'https://via.placeholder.com/100',
+      imageUrl: tractor,
       category: 'Equipment',
       seller: 'FarmTech Equipment',
     },
@@ -37,57 +41,16 @@ const MarketPlaceScreen = () => {
       title: 'NPK Fertilizer',
       description: 'Balanced NPK fertilizer for optimal crop growth.',
       price: '$30.00',
-      imageUrl: 'https://via.placeholder.com/100',
+      imageUrl: npkFertilizer,
       category: 'Fertilizers',
       seller: 'AgriFert Ltd.',
     },
-    // More products here...
   ]);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim()) {
-      const filteredProducts = products.filter((product) =>
-        product.title.toLowerCase().includes(query.toLowerCase())
-      );
-      setProducts(filteredProducts);
-    } else {
-      setProducts([
-        // Reset to original list if search is cleared
-        {
-          id: '1',
-          title: 'Organic Tomato Seeds',
-          description: 'High-quality organic tomato seeds for your farm.',
-          price: '$10.00',
-          imageUrl: 'https://via.placeholder.com/100',
-          category: 'Seeds',
-          seller: 'AgriSeeds Co.',
-        },
-        {
-          id: '2',
-          title: 'Tractor - Model X',
-          description: 'Efficient tractor for large-scale farming.',
-          price: '$25,000.00',
-          imageUrl: 'https://via.placeholder.com/100',
-          category: 'Equipment',
-          seller: 'FarmTech Equipment',
-        },
-        {
-          id: '3',
-          title: 'NPK Fertilizer',
-          description: 'Balanced NPK fertilizer for optimal crop growth.',
-          price: '$30.00',
-          imageUrl: 'https://via.placeholder.com/100',
-          category: 'Fertilizers',
-          seller: 'AgriFert Ltd.',
-        },
-      ]);
-    }
-  };
 
   const renderProductItem = ({ item }: { item: Product }) => (
     <View style={styles.productItem}>
-      <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+     <Image source={typeof item.imageUrl === 'string' ? { uri: item.imageUrl } : item.imageUrl} style={styles.productImage} />
+
       <View style={styles.productInfo}>
         <Text style={styles.productTitle}>{item.title}</Text>
         <Text style={styles.productDescription}>{item.description}</Text>
@@ -95,10 +58,7 @@ const MarketPlaceScreen = () => {
         <Text style={styles.productSeller}>Seller: {item.seller}</Text>
         <TouchableOpacity
           style={styles.viewDetailsButton}
-          onPress={() => {
-            // Handle view product details, could navigate to a new screen
-            alert(`Viewing details of ${item.title}`);
-          }}
+          onPress={() => alert(`Viewing details of ${item.title}`)}
         >
           <Text style={styles.viewDetailsButtonText}>View Details</Text>
         </TouchableOpacity>
@@ -113,21 +73,8 @@ const MarketPlaceScreen = () => {
         style={styles.searchInput}
         placeholder="Search for products..."
         value={searchQuery}
-        onChangeText={handleSearch}
+        onChangeText={setSearchQuery}
       />
-
-      <View style={styles.categoryContainer}>
-        <TouchableOpacity style={styles.categoryButton} onPress={() => handleSearch('Seeds')}>
-          <Text style={styles.categoryButtonText}>Seeds</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton} onPress={() => handleSearch('Equipment')}>
-          <Text style={styles.categoryButtonText}>Equipment</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton} onPress={() => handleSearch('Fertilizers')}>
-          <Text style={styles.categoryButtonText}>Fertilizers</Text>
-        </TouchableOpacity>
-      </View>
-
       <FlatList
         data={products}
         renderItem={renderProductItem}
@@ -157,20 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingLeft: 10,
     marginBottom: 20,
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  categoryButton: {
-    padding: 10,
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
-  },
-  categoryButtonText: {
-    color: '#fff',
-    fontSize: 14,
   },
   productList: {
     marginBottom: 20,
@@ -207,7 +140,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 16,
-    color: '#4CAF50',
+    color: '#026338',
     marginTop: 5,
   },
   productSeller: {
@@ -217,7 +150,7 @@ const styles = StyleSheet.create({
   },
   viewDetailsButton: {
     marginTop: 15,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

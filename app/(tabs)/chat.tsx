@@ -10,13 +10,19 @@ import {
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
+// Import local images
+import Avatar1 from "../../Images/profile.png"; // Replace with your local path
+import Avatar2 from "../../Images/profile.png"; // Replace with your local path
+import Avatar3 from "../../Images/profile.png"; // Replace with your local path
+import Avatar4 from "../../Images/profile.png"; // Replace with your local path
+
 interface Chat {
   id: string;
   name: string;
   lastMessage: string;
   timestamp: string;
   unreadMessages: number;
-  avatar: string;
+  avatar: any; // Can be a string (remote URL) or local image
 }
 
 type RootStackParamList = {
@@ -31,7 +37,7 @@ const ChatScreen: React.FC = () => {
       lastMessage: "Crop prices are rising 📈",
       timestamp: "10:30 AM",
       unreadMessages: 2,
-      avatar: "https://via.placeholder.com/50",
+      avatar: Avatar1, // Local image
     },
     {
       id: "2",
@@ -39,7 +45,7 @@ const ChatScreen: React.FC = () => {
       lastMessage: "New fertilizer available now!",
       timestamp: "Yesterday",
       unreadMessages: 0,
-      avatar: "https://via.placeholder.com/50",
+      avatar: Avatar2, // Local image
     },
     {
       id: "3",
@@ -47,7 +53,7 @@ const ChatScreen: React.FC = () => {
       lastMessage: "Let's plan the next webinar 🌱",
       timestamp: "Monday",
       unreadMessages: 1,
-      avatar: "https://via.placeholder.com/50",
+      avatar: Avatar3, // Local image
     },
     {
       id: "4",
@@ -55,25 +61,28 @@ const ChatScreen: React.FC = () => {
       lastMessage: "Your order has been shipped 🚜",
       timestamp: "Sunday",
       unreadMessages: 0,
-      avatar: "https://via.placeholder.com/50",
+      avatar: Avatar4, // Local image
     },
   ]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleOpenChat = (chat: Chat) => {
-    navigation.navigate('ChatDetailScreen', {
+    navigation.navigate("ChatDetailScreen", {  // Ensure it matches exactly
       chatId: chat.id,
       chatName: chat.name,
     });
     setChats((prevChats) =>
-      prevChats.map((c) => (c.id === chat.id ? { ...c, unreadMessages: 0 } : c))
+      prevChats.map((c) =>
+        c.id === chat.id ? { ...c, unreadMessages: 0 } : c
+      )
     );
   };
   
+
   const renderChatItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity style={styles.chatItem} onPress={() => handleOpenChat(item)}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
+      <Image source={item.avatar} style={styles.avatar} />
       <View style={styles.chatInfo}>
         <View>
           <Text style={styles.chatName}>{item.name}</Text>
@@ -94,10 +103,14 @@ const ChatScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}> Chats</Text>
+        <Text style={styles.headerTitle}>Chats</Text>
         <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" />
       </View>
-      <FlatList data={chats} keyExtractor={(item) => item.id} renderItem={renderChatItem} />
+      <FlatList
+        data={chats}
+        keyExtractor={(item) => item.id}
+        renderItem={renderChatItem}
+      />
     </View>
   );
 };

@@ -10,10 +10,10 @@ interface Message {
 }
 
 type RootStackParamList = {
-  ChatDetailScreen: { chatId: string; chatName: string };
+  chatDetailScreen: { chatId: string; chatName: string };
 };
 
-type ChatDetailScreenRouteProp = RouteProp<RootStackParamList, 'ChatDetailScreen'>;
+type ChatDetailScreenRouteProp = RouteProp<RootStackParamList, 'chatDetailScreen'>;
 
 const ChatDetailScreen: React.FC = () => {
   const route = useRoute<ChatDetailScreenRouteProp>();

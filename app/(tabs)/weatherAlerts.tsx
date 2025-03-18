@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     padding: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     borderRadius: 8,
   },
   filterButtonText: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   viewDetailsButton: {
     marginTop: 15,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   },
   categoryButton: {
     padding: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#026338',
     borderRadius: 8,
   },
   categoryButtonText: {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   articleCategory: {
     fontSize: 14,
-    color: '#4CAF50',
+    color: '#026338',
     marginTop: 5,
   },
   articleDescription: {

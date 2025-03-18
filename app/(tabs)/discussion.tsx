@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+
 
 type Discussion = {
   id: string;
@@ -78,7 +78,7 @@ const DiscussionScreen = ({ navigation }: any) => {
           value={newDiscussion}
           onChangeText={setNewDiscussion}
         />
-        <Button title="Post" onPress={handleCreateDiscussion} color="#4CAF50" />
+        <Button title="Post" onPress={handleCreateDiscussion} color="#026338" />
       </View>
     </View>
   );
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#026338',
     marginBottom: 10,
     textAlign: 'center',
   },
@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     borderLeftWidth: 5,
-    borderLeftColor: '#4CAF50',
+    borderLeftColor: '#026338',
   },
   discussionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#3b5d2e',
+    color: '#026338',
     marginBottom: 5,
   },
   discussionContent: {

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import adminImage from '../../Images/profile.png';
+import johnImage from '../../Images/profile.png';
+import janeImage from '../../Images/profile.png';
+import userImage from '../../Images/profile.png';
+
 
 type Message = {
   id: string;
@@ -19,7 +24,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       text: 'Welcome to the AgriConnect discussion forum! Feel free to ask anything related to farming.',
       sender: 'Admin',
       senderRole: 'Agronomist',
-      senderImage: 'https://example.com/images/admin.jpg', // Example image URL
+      senderImage: adminImage, // Example image URL
       createdAt: '10:00 AM',
     },
     {
@@ -27,7 +32,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       text: 'Can anyone recommend good soil management techniques for maize farming?',
       sender: 'John Doe',
       senderRole: 'Farmer',
-      senderImage: 'https://example.com/images/john.jpg',
+      senderImage:johnImage,
       createdAt: '10:05 AM',
     },
     {
@@ -35,7 +40,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       text: 'Sure, John! You should try crop rotation and composting. It works great!',
       sender: 'Jane Smith',
       senderRole: 'Agronomist',
-      senderImage: 'https://example.com/images/jane.jpg',
+      senderImage: janeImage,
       createdAt: '10:10 AM',
     },
     {
@@ -43,7 +48,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       text: 'That sounds useful. I’ll give it a try!',
       sender: 'John Doe',
       senderRole: 'Farmer',
-      senderImage: 'https://example.com/images/john.jpg',
+      senderImage: johnImage,
       createdAt: '10:15 AM',
     },
   ]);
@@ -55,7 +60,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
         text: message,
         sender: 'Lois', // Replace with logged-in user's name
         senderRole: 'Farmer', 
-        senderImage: 'https://example.com/images/user1.jpg', 
+        senderImage:userImage, 
         createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -68,7 +73,8 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={[styles.messageContainer, item.sender === 'Lois' && styles.userMessage]}>
       <View style={styles.messageHeader}>
-        <Image source={{ uri: item.senderImage }} style={styles.profileImage} />
+      <Image source={typeof item.senderImage === 'string' ? { uri: item.senderImage } : item.senderImage} style={styles.profileImage} />
+
         <View style={styles.messageHeaderText}>
           <Text style={styles.sender}>{item.sender}</Text>
           <Text style={styles.senderRole}>{item.senderRole}</Text>
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4CAF50', // Earthy green color
+    backgroundColor: '#026338', // Earthy green color
     padding: 10,
   },
   headerTitle: {
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   userMessage: {
-    backgroundColor: '#e1ffc7', // Light green for current user’s messages
+    backgroundColor: '#026338', // Light green for current user’s messages
   },
   messageHeader: {
     flexDirection: 'row',
@@ -160,11 +166,11 @@ const styles = StyleSheet.create({
   sender: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#4CAF50', // Dark green for sender's name
+    color: '#026338', // Dark green for sender's name
   },
   senderRole: {
     fontSize: 12,
-    color: '#A9A9A9', // Gray color for sender's role
+    color: '#026338', // Gray color for sender's role
   },
   messageText: {
     fontSize: 16,
@@ -193,7 +199,7 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     marginLeft: 10,
-    backgroundColor: '#4CAF50', // Match header color
+    backgroundColor: '#026338', // Match header color
     padding: 10,
     borderRadius: 50,
   },
