@@ -1,5 +1,3 @@
-// Assuming this is in a file like CustomInput.tsx
-
 import { ThemeProps, useThemeColor } from "@/hooks/useThemeColor";
 import React from "react";
 import TextInput from "react-native-paper/src/components/TextInput/TextInput";
@@ -18,6 +16,7 @@ interface FormInputProps extends TextInputProps {
   left?: React.ReactNode;
   lightColor?: string; // Add lightColor property
   darkColor?: string;  // Add darkColor property
+  style?: object;  // Add the style prop to accept custom styles
 }
 
 const CustomInput: React.FC<FormInputProps> = ({
@@ -31,6 +30,7 @@ const CustomInput: React.FC<FormInputProps> = ({
   darkColor,
   right,
   left,
+  style, // Accept the style prop here
   ...otherProps
 }) => {
   const backgroundColor = useThemeColor(
@@ -44,12 +44,12 @@ const CustomInput: React.FC<FormInputProps> = ({
 
   return (
     <TextInput
-      style={{
+      style={[{
         backgroundColor,
         fontSize: 12,
         color: "black",
         marginTop: 6,
-      }}
+      }, style]} // Apply passed style here
       textColor={textColor}
       label={label}
       mode="outlined"

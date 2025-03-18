@@ -31,7 +31,6 @@ const Signup = () => {
     setLoading(true);
 
     try {
-     
       const response = await axios.post('http://localhost:8080/api/users/register', {
         fullName,
         email,
@@ -54,103 +53,90 @@ const Signup = () => {
   };
 
   return (
-    <View className="w-full">
-      <View className="h-40 bg-[#026338]"></View>
-      <View className="rounded-t-3xl h-screen absolute top-32 px-4 py-8">
-        <View className="flex flex-row justify-center py-4">
-          <Text className="font-extrabold text-3xl">Agri</Text>
-          <Text className="text-[#026338] font-extrabold text-3xl">Connect</Text>
+    <View style={styles.container}>
+      <View style={styles.header}></View>
+      <View style={styles.formContainer}>
+        <View style={styles.logoContainer}>
+          <Text style={styles.logoText}>Agri</Text>
+          <Text style={[styles.logoText, styles.logoHighlight]}>Connect</Text>
         </View>
-        <View>
-          <Text className="text-[#0e244e9e] font-bold text-lg text-center">
-            Welcome...
-          </Text>
-          <Text className="text-gray-600 font-bold text-sm text-center py-2">
-            Create an account to get started
-          </Text>
+        <Text style={styles.welcomeText}>Welcome...</Text>
+        <Text style={styles.subText}>Create an account to get started</Text>
+
+        <View style={styles.formFields}>
+          <CustomInput
+            left={<TextInput.Icon icon="account" />}
+            label="Full Name"
+            value={fullName}
+            onChangeText={setFullName}
+          />
+          <CustomInput
+            left={<TextInput.Icon icon="mail" />}
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <CustomInput
+            left={<TextInput.Icon icon="lock" />}
+            label="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <CustomInput
+            left={<TextInput.Icon icon="lock" />}
+            label="Confirm Password"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+          <CustomInput
+            left={<TextInput.Icon icon="map" />}
+            label="Region"
+            value={region}
+            onChangeText={setRegion}
+          />
         </View>
-        <View>
-          <View className="py-4">
-            <CustomInput
-              left={<TextInput.Icon icon="account" />}
-              label="Full Name"
-              value={fullName}
-              onChangeText={setFullName}
-            />
-            <CustomInput
-              left={<TextInput.Icon icon="mail" />}
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <CustomInput
-              left={<TextInput.Icon icon="lock" />}
-              label="Password"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-            <CustomInput
-              left={<TextInput.Icon icon="lock" />}
-              label="Confirm Password"
-              secureTextEntry
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-            <CustomInput
-              left={<TextInput.Icon icon="map" />}
-              label="Region"
-              value={region}
-              onChangeText={setRegion}
-            />
-          </View>
 
-          <View className="py-3">
-            <CustomButton buttonText="Sign Up" onPress={handleSignup} />
-          </View>
+        <View style={styles.buttonContainer}>
+          <CustomButton buttonText="Sign Up" onPress={handleSignup} />
+        </View>
 
-          {loading && <ActivityIndicator size="large" color="#026338" />}
+        {loading && <ActivityIndicator size="large" color="#026338" />}
 
-          <View className="flex flex-row items-center gap-x-2">
-            <View className="h-[1px] w-[45%] bg-gray-200"></View>
-            <Text>OR</Text>
-            <View className="h-[1px] w-[45%] bg-gray-200"></View>
-          </View>
+        <View style={styles.orContainer}>
+          <View style={styles.divider}></View>
+          <Text>OR</Text>
+          <View style={styles.divider}></View>
+        </View>
 
-          <View>
-            <TouchableOpacity
-              className="py-4 border-[1px] w-full flex m-auto border-gray-200 rounded-lg mt-4 mb-2"
-              onPress={() => console.log("Google signup pressed")}
-            >
-              <View className="flex flex-row justify-center gap-2 bg-transparent">
-                <Image source={{ uri: '../../Images/google.png' }} style={{ height: 20, width: 20 }} />
-                <Text className="text-center text-[#026338]">
-                  Sign Up with Google
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.socialLoginContainer}>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={() => console.log("Google signup pressed")}
+          >
+            <View style={styles.socialButtonContent}>
+              <Image source={require('../../Images/google.png')} style={styles.socialIcon} />
+              <Text style={styles.socialButtonText}>Sign Up with Google</Text>
+            </View>
+          </TouchableOpacity>
 
-          <View>
-            <TouchableOpacity
-              className="py-4 border-[1px] w-full flex m-auto border-gray-200 rounded-lg mt-2 mb-2"
-              onPress={() => console.log("Facebook signup pressed")}
-            >
-              <View className="flex flex-row justify-center gap-2 bg-transparent">
-                <Image source={{ uri: '../../Images/facebook.png' }}  style={{ height: 20, width: 20 }} />
-                <Text className="text-center text-[#626262]">
-                  Sign Up with Facebook
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={() => console.log("Facebook signup pressed")}
+          >
+            <View style={styles.socialButtonContent}>
+              <Image source={require('../../Images/facebook.png')} style={styles.socialIcon} />
+              <Text style={styles.socialButtonText}>Sign Up with Facebook</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-          <View className="flex flex-row py-4 justify-center">
-            <Text>Already have an account?</Text>
-            <Pressable onPress={() => router.push("./login")}>
-              <Text className="text-[#026338]">Login</Text>
-            </Pressable>
-          </View>
+        <View style={styles.loginPromptContainer}>
+          <Text>Already have an account?</Text>
+          <Pressable onPress={() => router.push("/Login")}>
+            <Text style={styles.loginText}>Login</Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -159,4 +145,101 @@ const Signup = () => {
 
 export default Signup;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+  },
+  header: {
+    height: 160,
+    backgroundColor: '#026338',
+  },
+  formContainer: {
+    position: 'absolute',
+    top: 160,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+   
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 16,
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: '800',
+  },
+  logoHighlight: {
+    color: '#026338',
+  },
+  welcomeText: {
+    fontSize: 18,
+    color: '#0e244e9e',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  subText: {
+    fontSize: 14,
+    color: '#626262',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 8,
+  },
+  formFields: {
+    paddingBottom: 16,
+  },
+  buttonContainer: {
+    paddingVertical: 16,
+  },
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  divider: {
+    height: 1,
+    width: '40%',
+    backgroundColor: '#E6E8EE',
+  },
+  socialLoginContainer: {
+    paddingVertical: 16,
+  },
+  socialButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#E6E8EE',
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  socialButtonContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  socialIcon: {
+    height: 20,
+    width: 20,
+    marginRight: 8,
+  },
+  socialButtonText: {
+    color: '#026338',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  loginPromptContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  loginText: {
+    color: '#026338',
+    fontWeight: '600',
+  },
+});

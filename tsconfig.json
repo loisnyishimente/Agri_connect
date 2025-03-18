@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "src/images.d.ts",
     "expo-env.d.ts"
-  ]
+, "app/Apis/Api.jsx"  ]
 }
