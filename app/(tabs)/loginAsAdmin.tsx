@@ -1,24 +1,23 @@
-import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { TextInput } from "react-native-paper";
 import CustomInput from "@/components/form/customInput";
 import CustomButton from "@/components/form/customButton";
+import { router } from "expo-router"; // Using the router for navigation
 import { View } from "@/components/View";
 import { Text } from "@/components/Text";
 import { StackParamList } from "../../components/navigation/StackNavigator";
 
-const Login = () => {
+const AdminLogin = () => {
   type NavigationProps = NativeStackNavigationProp<StackParamList, "Main">;
   const navigation = useNavigation<NavigationProps>();
 
-  const handleSignIn = () => {
-    navigation.navigate("Main"); // Navigate to "Main"
-  };
-
-  const handleAdminLogin = () => {
-    navigation.navigate("loginAsAdmin"); // Navigate to "loginAsAdmin"
+  const handleAdminSignIn = () => {
+    // TODO: Implement admin authentication logic here
+    console.log("Admin Sign-In");
+    navigation.navigate("Main");
   };
 
   return (
@@ -26,49 +25,36 @@ const Login = () => {
       <View style={styles.header}></View>
       <View style={styles.mainContent}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Agri</Text>
-          <Text style={[styles.title, styles.highlightedText]}>Connect</Text>
+          <Text style={styles.title}>Admin</Text>
+          <Text style={[styles.title, styles.highlightedText]}>Login</Text>
         </View>
         <View>
-          <Text style={styles.welcomeText}>Welcome...</Text>
-          <Text style={styles.signInText}>Sign In to continue</Text>
+          <Text style={styles.welcomeText}>Welcome, Admin</Text>
+          <Text style={styles.signInText}>Sign in with your credentials</Text>
         </View>
         <View style={styles.formContainer}>
           <CustomInput
-            left={<TextInput.Icon icon="mail" />}
-            label="Your Email"
+            left={<TextInput.Icon icon="account" />}
+            label="Admin Username"
             style={styles.input}
           />
           <CustomInput
             left={<TextInput.Icon icon="lock" />}
             label="Password"
+            secureTextEntry
             style={styles.input}
           />
         </View>
         <CustomButton
-          buttonText="Sign In"
+          buttonText="Sign In as Admin"
           style={styles.signInButton}
-          onPress={handleSignIn}
+          onPress={handleAdminSignIn} // Attach the admin login logic
         />
-        <View style={styles.orContainer}>
-          <View style={styles.separator}></View>
-          <Text>OR</Text>
-          <View style={styles.separator}></View>
-        </View>
-        <TouchableOpacity
-          style={styles.socialButton}
-          onPress={handleAdminLogin}
-        >
-          <View style={styles.socialButtonContent}>
-            <Text style={styles.socialText}>Login as Admin</Text>
-          </View>
-        </TouchableOpacity>
-
         <Text style={styles.forgotPassword}>Forgot password?</Text>
         <View style={styles.registerContainer}>
-          <Text>Don't have an account?</Text>
-          <Pressable onPress={() => navigation.push("SignUp")}>
-            <Text style={styles.registerText}>Register</Text>
+          <Text>Not an admin?</Text>
+          <Pressable onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.registerText}>Login as User</Text>
           </Pressable>
         </View>
       </View>
@@ -76,7 +62,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;
 
 const styles = StyleSheet.create({
   container: {
@@ -85,7 +71,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 160,
-    backgroundColor: "#026338",
+    backgroundColor: "#8B0000", // Dark red for admin theme
   },
   mainContent: {
     position: "absolute",
@@ -108,7 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   highlightedText: {
-    color: "#026338",
+    color: "#8B0000", // Dark red for admin login
   },
   welcomeText: {
     fontSize: 18,
@@ -131,41 +117,11 @@ const styles = StyleSheet.create({
   },
   signInButton: {
     marginVertical: 12,
-  },
-  orContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 16,
-  },
-  separator: {
-    height: 1,
-    width: "40%",
-    backgroundColor: "#D1D1D1",
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#D1D1D1",
-    borderRadius: 8,
-    paddingVertical: 12,
-    marginVertical: 8,
-  },
-  socialButtonContent: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  socialText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#026338",
+    backgroundColor: "#8B0000", // Button color for admin login
   },
   forgotPassword: {
     textAlign: "center",
-    color: "#026338",
+    color: "#8B0000",
     marginVertical: 8,
   },
   registerContainer: {
@@ -174,7 +130,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   registerText: {
-    color: "#026338",
+    color: "#8B0000",
     fontWeight: "700",
+    marginLeft: 5,
   },
 });

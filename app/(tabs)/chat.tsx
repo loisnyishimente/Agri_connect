@@ -1,200 +1,171 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
   FlatList,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Client } from '@stomp/stompjs';
-import { useNavigation } from '@react-navigation/native';
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
-type Message = {
+interface Chat {
   id: string;
-  text: string;
-  isSender: boolean;
+  name: string;
+  lastMessage: string;
+  timestamp: string;
+  unreadMessages: number;
+  avatar: string;
+}
+
+type RootStackParamList = {
+  ChatDetailScreen: { chatId: string; chatName: string };
 };
 
 const ChatScreen: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const navigation = useNavigation();
-  const client = useRef<Client | null>(null);
+  const [chats, setChats] = useState<Chat[]>([
+    {
+      id: "1",
+      name: "Farmer John",
+      lastMessage: "Crop prices are rising 📈",
+      timestamp: "10:30 AM",
+      unreadMessages: 2,
+      avatar: "https://via.placeholder.com/50",
+    },
+    {
+      id: "2",
+      name: "AgroMarket",
+      lastMessage: "New fertilizer available now!",
+      timestamp: "Yesterday",
+      unreadMessages: 0,
+      avatar: "https://via.placeholder.com/50",
+    },
+    {
+      id: "3",
+      name: "Rwanda Agri-Coop",
+      lastMessage: "Let's plan the next webinar 🌱",
+      timestamp: "Monday",
+      unreadMessages: 1,
+      avatar: "https://via.placeholder.com/50",
+    },
+    {
+      id: "4",
+      name: "Pesticide Suppliers",
+      lastMessage: "Your order has been shipped 🚜",
+      timestamp: "Sunday",
+      unreadMessages: 0,
+      avatar: "https://via.placeholder.com/50",
+    },
+  ]);
 
-  // Fetch chat history from the backend
-  useEffect(() => {
-    fetch('http://localhost:8080/api/messages')
-      .then((response) => response.json())
-      .then((data) => setMessages(data.reverse()))
-      .catch((error) => console.error('Error fetching messages:', error));
-  }, []);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // Configure STOMP WebSocket client
-  useEffect(() => {
-    client.current = new Client({
-      brokerURL: 'ws://localhost:8080/ws',
-      onConnect: () => {
-        console.log('Connected to WebSocket');
-        client.current?.subscribe('/topic/messages', (message) => {
-          const receivedMessage: Message = JSON.parse(message.body);
-          setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
-        });
-      },
-      onStompError: (error) => {
-        console.error('Error with STOMP:', error);
-      },
+  const handleOpenChat = (chat: Chat) => {
+    navigation.navigate('ChatDetailScreen', {
+      chatId: chat.id,
+      chatName: chat.name,
     });
-
-    client.current.activate();
-
-    return () => {
-      client.current?.deactivate();
-    };
-  }, []);
-
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      if (!client.current?.connected) {
-        console.error('STOMP client is not connected');
-        return;
-      }
-
-      const message: Message = {
-        id: Date.now().toString(),
-        text: newMessage.trim(),
-        isSender: true,
-      };
-
-      // Send message to the backend
-      client.current.publish({
-        destination: '/app/chat',
-        body: JSON.stringify(message),
-      });
-
-      setNewMessage('');
-    }
+    setChats((prevChats) =>
+      prevChats.map((c) => (c.id === chat.id ? { ...c, unreadMessages: 0 } : c))
+    );
   };
-
-  const renderMessage = ({ item }: { item: Message }) => (
-    <View
-      style={[
-        styles.messageContainer,
-        item.isSender ? styles.sender : styles.receiver,
-      ]}
-    >
-      <Text style={styles.messageText}>{item.text}</Text>
-    </View>
+  
+  const renderChatItem = ({ item }: { item: Chat }) => (
+    <TouchableOpacity style={styles.chatItem} onPress={() => handleOpenChat(item)}>
+      <Image source={{ uri: item.avatar }} style={styles.avatar} />
+      <View style={styles.chatInfo}>
+        <View>
+          <Text style={styles.chatName}>{item.name}</Text>
+          <Text style={styles.lastMessage}>{item.lastMessage}</Text>
+        </View>
+        <View style={styles.rightSection}>
+          <Text style={styles.timestamp}>{item.timestamp}</Text>
+          {item.unreadMessages > 0 && (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadText}>{item.unreadMessages}</Text>
+            </View>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={90}
-    >
+    <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back-outline" size={24} color="#FFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chat</Text>
-        <Ionicons name="ellipsis-vertical" size={24} color="#FFF" />
+        <Text style={styles.headerTitle}> Chats</Text>
+        <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" />
       </View>
-
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-        style={styles.chatBody}
-        contentContainerStyle={{ ...styles.chatBodyContent, paddingBottom: 80 }}
-        inverted
-      />
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type a message"
-          placeholderTextColor="#888"
-          value={newMessage}
-          onChangeText={setNewMessage}
-        />
-        <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
-          <Ionicons name="send" size={24} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+      <FlatList data={chats} keyExtractor={(item) => item.id} renderItem={renderChatItem} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   header: {
-    height: 60,
-    backgroundColor: '#4CAF50',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    backgroundColor: "#2E7D32",
   },
   headerTitle: {
-    color: '#FFF',
+    fontSize: 20,
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  chatItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: "#DDD",
+    backgroundColor: "#FFF",
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+  },
+  chatInfo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+    alignItems: "center",
+  },
+  chatName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-  chatBody: {
-    flex: 1,
+  lastMessage: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 2,
   },
-  chatBodyContent: {
-    padding: 10,
+  rightSection: {
+    alignItems: "flex-end",
   },
-  messageContainer: {
-    maxWidth: '75%',
-    marginBottom: 10,
-    borderRadius: 15,
-    padding: 10,
+  timestamp: {
+    fontSize: 12,
+    color: "#999",
   },
-  sender: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
+  unreadBadge: {
+    backgroundColor: "#2E7D32",
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginTop: 5,
   },
-  receiver: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-  },
-  messageText: {
-    fontSize: 16,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    marginBottom: 0,
-    borderColor: '#E0E0E0',
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 10,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  sendButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  unreadText: {
+    color: "#FFF",
+    fontSize: 12,
+    fontWeight: "bold",
   },
 });
 
