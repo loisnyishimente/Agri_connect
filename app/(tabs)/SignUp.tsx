@@ -5,17 +5,17 @@ import CustomInput from "@/components/form/customInput";
 import CustomButton from "@/components/form/customButton";
 import { TouchableOpacity } from "react-native";
 import { router } from "expo-router";
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View } from "@/components/View";
 import { Text } from "@/components/Text";
 
 const Signup = () => {
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [region, setRegion] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [region, setRegion] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
     if (!fullName || !email || !password || !confirmPassword || !region) {
@@ -31,20 +31,10 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8080/api/users/register', {
-        fullName,
-        email,
-        password,
-        role: "farmer",  
-        region
-      });
-
-      if (response.data.success) {
-        Alert.alert("Success", "Signup successful!");
-        router.push("/Login"); 
-      } else {
-        Alert.alert("Error", response.data.message);
-      }
+      const user = { fullName, email, password, role: "farmer", region };
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      Alert.alert("Success", "Signup successful!");
+      router.push("/Login");
     } catch (error) {
       Alert.alert("Error", "An error occurred during signup. Please try again.");
     } finally {
@@ -64,38 +54,11 @@ const Signup = () => {
         <Text style={styles.subText}>Create an account to get started</Text>
 
         <View style={styles.formFields}>
-          <CustomInput
-            left={<TextInput.Icon icon="account" />}
-            label="Full Name"
-            value={fullName}
-            onChangeText={setFullName}
-          />
-          <CustomInput
-            left={<TextInput.Icon icon="mail" />}
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <CustomInput
-            left={<TextInput.Icon icon="lock" />}
-            label="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <CustomInput
-            left={<TextInput.Icon icon="lock" />}
-            label="Confirm Password"
-            secureTextEntry
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
-          <CustomInput
-            left={<TextInput.Icon icon="map" />}
-            label="Region"
-            value={region}
-            onChangeText={setRegion}
-          />
+          <CustomInput left={<TextInput.Icon icon="account" />} label="Full Name" value={fullName} onChangeText={setFullName} />
+          <CustomInput left={<TextInput.Icon icon="mail" />} label="Email" value={email} onChangeText={setEmail} />
+          <CustomInput left={<TextInput.Icon icon="lock" />} label="Password" secureTextEntry value={password} onChangeText={setPassword} />
+          <CustomInput left={<TextInput.Icon icon="lock" />} label="Confirm Password" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
+          <CustomInput left={<TextInput.Icon icon="map" />} label="Region" value={region} onChangeText={setRegion} />
         </View>
 
         <View style={styles.buttonContainer}>
@@ -111,20 +74,14 @@ const Signup = () => {
         </View>
 
         <View style={styles.socialLoginContainer}>
-          <TouchableOpacity
-            style={styles.socialButton}
-            onPress={() => console.log("Google signup pressed")}
-          >
+          <TouchableOpacity style={styles.socialButton} onPress={() => console.log("Google signup pressed")}> 
             <View style={styles.socialButtonContent}>
               <Image source={require('../../Images/google.png')} style={styles.socialIcon} />
               <Text style={styles.socialButtonText}>Sign Up with Google</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.socialButton}
-            onPress={() => console.log("Facebook signup pressed")}
-          >
+          <TouchableOpacity style={styles.socialButton} onPress={() => console.log("Facebook signup pressed")}> 
             <View style={styles.socialButtonContent}>
               <Image source={require('../../Images/facebook.png')} style={styles.socialIcon} />
               <Text style={styles.socialButtonText}>Sign Up with Facebook</Text>
@@ -144,7 +101,6 @@ const Signup = () => {
 };
 
 export default Signup;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -163,7 +119,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-   
   },
   logoContainer: {
     flexDirection: 'row',
@@ -218,7 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
   },
-  socialButtonContent: {
+  socialButtonContent: { // ✅ Added missing style
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

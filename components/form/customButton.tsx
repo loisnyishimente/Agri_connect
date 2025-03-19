@@ -1,4 +1,4 @@
-import { router, Link, useSegments } from "expo-router";
+import { router, Link } from "expo-router";
 import React from "react";
 import { Button } from "react-native-paper";
 import { StyleSheet, Text, ViewStyle } from "react-native";
@@ -29,16 +29,22 @@ export default function CustomButton({ href, buttonText, onPress, style }: Custo
     }
     if (href) {
       try {
-        router.push(href as any); // Bypass strict type checking
+        // Ensure that href matches the expected paths
+        if (href === "/Main" || href === "/login") {
+          router.push(href as any);
+        } else {
+          console.error("Invalid navigation path:", href);
+        }
       } catch (error) {
-        console.error("Invalid navigation path:", error);
+        console.error("Error navigating:", error);
       }
     }
   };
 
+  // When href is provided, use Link component for navigation
   if (href) {
     return (
-      <Link href={href as any} asChild>
+      <Link href={href as any}>
         <Button mode="contained" style={[styles.button, style]}>
           <Text style={styles.text}>{buttonText}</Text>
         </Button>

@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import { Pressable, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { TextInput } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomInput from "@/components/form/customInput";
 import CustomButton from "@/components/form/customButton";
 import { View } from "@/components/View";
@@ -13,12 +14,34 @@ const Login = () => {
   type NavigationProps = NativeStackNavigationProp<StackParamList, "Main">;
   const navigation = useNavigation<NavigationProps>();
 
-  const handleSignIn = () => {
-    navigation.navigate("Main"); // Navigate to "Main"
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+
+  const handleSignIn = async () => {
+    try {
+      const userData = await AsyncStorage.getItem("user");
+
+      if (!userData) {
+        Alert.alert("Error", "No user found. Please sign up first.");
+        return;
+      }
+
+      const storedUser = JSON.parse(userData);
+      if (storedUser.email === email && storedUser.password === password) {
+        Alert.alert("Success", "Login successful!");
+        navigation.replace("Main");
+      } else {
+        Alert.alert("Error", "Invalid email or password.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   const handleAdminLogin = () => {
-    navigation.navigate("loginAsAdmin"); // Navigate to "loginAsAdmin"
+    navigation.navigate("loginAsAdmin");
   };
 
   return (
@@ -37,11 +60,16 @@ const Login = () => {
           <CustomInput
             left={<TextInput.Icon icon="mail" />}
             label="Your Email"
+            value={email}
+            onChangeText={setEmail}
             style={styles.input}
           />
           <CustomInput
             left={<TextInput.Icon icon="lock" />}
             label="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
             style={styles.input}
           />
         </View>
