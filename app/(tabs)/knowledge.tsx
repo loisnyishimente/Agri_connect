@@ -68,14 +68,6 @@ const KnowledgeScreen = () => {
           url: 'https://example.com/soil-health',
         },
         {
-          id: '2',
-          title: 'Top Tips for Pest Control',
-          description: 'Explore the most effective ways to manage pests in your crops.',
-          category: 'Pest Control',
-          date: '2025-03-05',
-          url: 'https://example.com/pest-control',
-        },
-        {
           id: '3',
           title: 'Irrigation Techniques for Better Yields',
           description: 'Understand the irrigation systems that can improve crop yields.',
