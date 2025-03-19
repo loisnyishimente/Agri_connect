@@ -98,18 +98,17 @@ const KnowledgeScreen = () => {
     });
   };
 
-// Function to pick a document
+
 const pickDocument = async () => {
   try {
     const res = await DocumentPicker.pick({
-      type: [DocumentPicker.types.pdf], // You can specify types if needed
+      type: [DocumentPicker.types.pdf], 
     });
 
-    // If there's at least one document picked, access its 'uri'
     if (res.length > 0) {
-      const fileUri = res[0].uri;  // Access the first document's 'uri'
+      const fileUri = res[0].uri; 
       console.log('Document URI:', fileUri);
-      // Do something with the URI, like uploading or displaying it
+ 
     }
   } catch (err) {
     if (DocumentPicker.isCancel(err)) {
@@ -335,6 +334,7 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 5,
   },
 });
 

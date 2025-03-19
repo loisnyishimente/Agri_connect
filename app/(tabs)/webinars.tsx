@@ -143,12 +143,11 @@ const WebinarsScreen = () => {
         contentContainerStyle={styles.webinarList}
       />
 
-      {/* Add Webinar Button */}
+
       <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.addButtonText}>Add Webinar</Text>
       </TouchableOpacity>
 
-      {/* Add Webinar Modal */}
       <Modal
         visible={isModalVisible}
         animationType="slide"

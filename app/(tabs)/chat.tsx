@@ -10,11 +10,11 @@ import {
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
-// Import local images
-import Avatar1 from "../../Images/profile.png"; // Replace with your local path
-import Avatar2 from "../../Images/profile.png"; // Replace with your local path
-import Avatar3 from "../../Images/profile.png"; // Replace with your local path
-import Avatar4 from "../../Images/profile.png"; // Replace with your local path
+
+import Avatar1 from "../../Images/profile.png"; 
+import Avatar2 from "../../Images/profile.png"; 
+import Avatar3 from "../../Images/profile.png"; 
+import Avatar4 from "../../Images/profile.png"; 
 
 interface Chat {
   id: string;
@@ -22,7 +22,7 @@ interface Chat {
   lastMessage: string;
   timestamp: string;
   unreadMessages: number;
-  avatar: any; // Can be a string (remote URL) or local image
+  avatar: any; 
 }
 
 type RootStackParamList = {
@@ -33,27 +33,27 @@ const ChatScreen: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([
     {
       id: "1",
-      name: "Farmer John",
+      name: " John",
       lastMessage: "Crop prices are rising 📈",
       timestamp: "10:30 AM",
       unreadMessages: 2,
-      avatar: Avatar1, // Local image
+      avatar: Avatar1,
     },
     {
       id: "2",
-      name: "AgroMarket",
+      name: "Alice",
       lastMessage: "New fertilizer available now!",
       timestamp: "Yesterday",
       unreadMessages: 0,
-      avatar: Avatar2, // Local image
+      avatar: Avatar2,
     },
     {
       id: "3",
-      name: "Rwanda Agri-Coop",
+      name: "Webinar Group",
       lastMessage: "Let's plan the next webinar 🌱",
       timestamp: "Monday",
       unreadMessages: 1,
-      avatar: Avatar3, // Local image
+      avatar: Avatar3, 
     },
     {
       id: "4",
@@ -61,14 +61,14 @@ const ChatScreen: React.FC = () => {
       lastMessage: "Your order has been shipped 🚜",
       timestamp: "Sunday",
       unreadMessages: 0,
-      avatar: Avatar4, // Local image
+      avatar: Avatar4, 
     },
   ]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleOpenChat = (chat: Chat) => {
-    navigation.navigate("ChatDetailScreen", {  // Ensure it matches exactly
+    navigation.navigate("ChatDetailScreen", {  
       chatId: chat.id,
       chatName: chat.name,
     });

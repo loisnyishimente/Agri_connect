@@ -4,7 +4,6 @@ import {
   Image, Alert, TextInput, ImageSourcePropType 
 } from 'react-native';
 
-// Import local images
 import Story1 from '../../Images/profile.png';
 import Story2 from '../../Images/profile.png';
 import Story3 from '../../Images/profile.png';
@@ -13,7 +12,7 @@ type SuccessStory = {
   title: string;
   description: string;
   date: string;
-  imageUrl: string | ImageSourcePropType; // Supports both local and remote images
+  imageUrl: string | ImageSourcePropType; 
 };
 
 const SuccessStoriesScreen = () => {
@@ -23,21 +22,21 @@ const SuccessStoriesScreen = () => {
       title: 'Tomato Yield Boost',
       description: 'After learning about crop rotation techniques, John increased his tomato yield by 50%.',
       date: '2025-03-18',
-      imageUrl: Story1, // Local image
+      imageUrl: Story1, 
     },
     {
       id: '2',
       title: 'Effective Pest Control',
       description: 'Using integrated pest management strategies, Jane saved her crops from a major pest outbreak.',
       date: '2025-03-17',
-      imageUrl: Story2, // Local image
+      imageUrl: Story2,
     },
     {
       id: '3',
       title: 'Increased Wheat Production',
       description: 'With proper irrigation methods learned from the platform, Ahmed doubled his wheat production.',
       date: '2025-03-16',
-      imageUrl: Story3, // Remote image
+      imageUrl: Story3,
     },
   ]);
 
@@ -54,7 +53,7 @@ const SuccessStoriesScreen = () => {
       title: newStory,
       description: 'No description provided.',
       date: new Date().toLocaleDateString(),
-      imageUrl: Story3, // Default remote image
+      imageUrl: Story3,
     };
 
     setStories([newSuccessStory, ...stories]);
@@ -86,7 +85,7 @@ const SuccessStoriesScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Success Stories</Text>
 
-      {/* Input field for new story */}
+
       <TextInput
         value={newStory}
         onChangeText={setNewStory}
@@ -98,7 +97,7 @@ const SuccessStoriesScreen = () => {
         <Text style={styles.addButtonText}>Add Story</Text>
       </TouchableOpacity>
 
-      {/* Success Stories List */}
+  
       <FlatList
         data={stories}
         renderItem={renderStoryItem}

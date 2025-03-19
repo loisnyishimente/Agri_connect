@@ -15,7 +15,7 @@ const AdminLogin = () => {
   const navigation = useNavigation<NavigationProps>();
 
   const handleAdminSignIn = () => {
-    // TODO: Implement admin authentication logic here
+  
     console.log("Admin Sign-In");
     navigation.navigate("Main");
   };
@@ -48,7 +48,7 @@ const AdminLogin = () => {
         <CustomButton
           buttonText="Sign In as Admin"
           style={styles.signInButton}
-          onPress={handleAdminSignIn} // Attach the admin login logic
+          onPress={handleAdminSignIn} 
         />
         <Text style={styles.forgotPassword}>Forgot password?</Text>
         <View style={styles.registerContainer}>

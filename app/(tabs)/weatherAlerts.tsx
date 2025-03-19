@@ -8,7 +8,7 @@ type WeatherAlert = {
   severity: string;
   date: string;
   location: string;
-  category: string; // e.g., 'Storm', 'Heatwave', 'Rain'
+  category: string; 
 };
 
 const WeatherAlertsScreen = () => {
@@ -23,15 +23,6 @@ const WeatherAlertsScreen = () => {
       category: 'Storm',
     },
    
-    {
-      id: '3',
-      title: 'Heavy Rainfall Warning',
-      description: 'Heavy rainfall expected in the Eastern Region. Farmers are advised to secure crops.',
-      severity: 'Moderate',
-      date: '2025-03-22',
-      location: 'Eastern Region',
-      category: 'Rain',
-    },
   ]);
 
   const [showModal, setShowModal] = useState(false);
@@ -83,7 +74,6 @@ const WeatherAlertsScreen = () => {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Weather Alerts</Text>
 
-      {/* Add Weather Alert Button */}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => setShowModal(true)}
@@ -91,7 +81,7 @@ const WeatherAlertsScreen = () => {
         <Text style={styles.addButtonText}>Add Weather Alert</Text>
       </TouchableOpacity>
 
-      {/* Category filter could be added here */}
+    
       <View style={styles.filterContainer}>
         <TouchableOpacity style={styles.filterButton}>
           <Text style={styles.filterButtonText}>All</Text>
@@ -114,7 +104,7 @@ const WeatherAlertsScreen = () => {
         contentContainerStyle={styles.alertList}
       />
 
-      {/* Modal to Add New Weather Alert */}
+
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
@@ -232,7 +222,7 @@ const styles = StyleSheet.create({
   },
   alertSeverity: {
     fontSize: 14,
-    color: '#ff5722', // Red color for high severity
+    color: '#ff5722', 
     marginTop: 5,
   },
   alertDescription: {

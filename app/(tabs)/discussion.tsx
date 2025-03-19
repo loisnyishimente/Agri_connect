@@ -13,20 +13,20 @@ type Discussion = {
 const DiscussionScreen = ({ navigation }: any) => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [newDiscussion, setNewDiscussion] = useState<string>('');
-  const [fullName, setFullName] = useState<string>(''); // Store the full name of the user
+  const [fullName, setFullName] = useState<string>(''); 
 
   useEffect(() => {
     const fetchUserName = async () => {
       try {
-        const user = await AsyncStorage.getItem('user'); // Fetch the entire user object from AsyncStorage
+        const user = await AsyncStorage.getItem('user'); 
         if (user !== null) {
-          const parsedUser = JSON.parse(user); // Assuming the user data is stored as a JSON string
-          setFullName(parsedUser.fullName || 'Guest'); // Extract and set only the user's fullName (fallback to 'Guest')
+          const parsedUser = JSON.parse(user); 
+          setFullName(parsedUser.fullName || 'Guest'); 
         } else {
-          setFullName('Guest'); // Fallback if no user is found
+          setFullName('Guest'); 
         }
 
-        // Fetch discussions including the sample discussion
+       
         fetchDiscussions();
       } catch (error) {
         console.error('Error fetching user name', error);
@@ -36,22 +36,21 @@ const DiscussionScreen = ({ navigation }: any) => {
     fetchUserName();
   }, []);
 
-  // Function to fetch discussions from AsyncStorage, including the sample discussion
   const fetchDiscussions = async () => {
     try {
       const storedDiscussions = await AsyncStorage.getItem('discussions');
       const parsedDiscussions: Discussion[] = storedDiscussions ? JSON.parse(storedDiscussions) : [];
 
-      // Check if sample discussion already exists, if not, add it
+     
       const sampleDiscussion: Discussion = {
         id: '1',
         title: 'Sample Discussion',
         content: 'This is a sample discussion available for all users.',
         createdAt: '2023-12-25 12:00 PM',
-        author: 'Admin', // You can customize the author
+        author: 'Admin',
       };
 
-      // Add the sample discussion if not already present
+  
       if (!parsedDiscussions.some((discussion) => discussion.id === sampleDiscussion.id)) {
         parsedDiscussions.unshift(sampleDiscussion);
       }
@@ -69,13 +68,13 @@ const DiscussionScreen = ({ navigation }: any) => {
         title: newDiscussion,
         content: 'This is a new discussion.',
         createdAt: new Date().toLocaleString(),
-        author: fullName || 'Guest', // Use fullName as the author
+        author: fullName || 'Guest', 
       };
-      const updatedDiscussions = [newPost, ...discussions]; // Add new post to the top of the list
+      const updatedDiscussions = [newPost, ...discussions]; 
       setDiscussions(updatedDiscussions);
-      setNewDiscussion(''); // Reset the input field
+      setNewDiscussion(''); 
 
-      // Save updated discussions to AsyncStorage
+      
       try {
         await AsyncStorage.setItem('discussions', JSON.stringify(updatedDiscussions));
       } catch (error) {
@@ -90,7 +89,7 @@ const DiscussionScreen = ({ navigation }: any) => {
         <Text style={styles.discussionTitle}>{item.title}</Text>
         <Text style={styles.discussionContent}>{item.content}</Text>
         <Text style={styles.createdAt}>{item.createdAt}</Text>
-        <Text style={styles.author}>By: {item.author}</Text> {/* Display only the author's name */}
+        <Text style={styles.author}>By: {item.author}</Text>
       </View>
     </TouchableOpacity>
   );

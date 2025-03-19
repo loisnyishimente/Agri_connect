@@ -16,18 +16,8 @@ const MyDiaryScreen = () => {
       description: 'Planted tomato seeds in the northern field. Expecting good harvest.',
       date: '2025-03-18',
     },
-    {
-      id: '2',
-      title: 'Watered Crops',
-      description: 'Watered the crops in the south field. Soil moisture looks good.',
-      date: '2025-03-17',
-    },
-    {
-      id: '3',
-      title: 'Harvested Lettuce',
-      description: 'Harvested lettuce from the eastern field, quality looks great.',
-      date: '2025-03-16',
-    },
+  
+  
   ]);
 
   const [newEntry, setNewEntry] = useState<string>('');
@@ -58,7 +48,7 @@ const MyDiaryScreen = () => {
       <TouchableOpacity
         style={styles.viewDetailsButton}
         onPress={() => {
-          // Navigate to Entry Detail Screen (if needed)
+         
           alert(`Viewing details of entry: ${item.title}`);
         }}
       >
@@ -71,7 +61,7 @@ const MyDiaryScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>My Dairy</Text>
 
-      {/* Input field for new entry */}
+  
       <TextInput
         value={newEntry}
         onChangeText={setNewEntry}
@@ -83,7 +73,7 @@ const MyDiaryScreen = () => {
         <Text style={styles.addButtonText}>Add Entry</Text>
       </TouchableOpacity>
 
-      {/* Diary Entries List */}
+      
       <FlatList
         data={entries}
         renderItem={renderEntryItem}

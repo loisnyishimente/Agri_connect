@@ -16,18 +16,18 @@ type Message = {
 const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
-  const [fullName, setUserFullName] = useState<string>(''); // Store the logged-in user's full name
-  const [role, setUserRole] = useState<string>(''); // Store the logged-in user's role
+  const [fullName, setUserFullName] = useState<string>(''); 
+  const [role, setUserRole] = useState<string>('');
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Retrieve the full name and role from local storage (AsyncStorage)
-        const userFullName = await AsyncStorage.getItem('user'); // Assuming full name is stored as 'fullName'
-        const userRole = await AsyncStorage.getItem('role'); // Assuming role is stored as 'role'
+   
+        const userFullName = await AsyncStorage.getItem('user');
+        const userRole = await AsyncStorage.getItem('role'); 
 
-        if (userFullName) setUserFullName(userFullName); // Set the full name correctly
-        if (userRole) setUserRole(userRole); // Set the role correctly
+        if (userFullName) setUserFullName(userFullName); 
+        if (userRole) setUserRole(userRole);
       } catch (error) {
         console.error('Error fetching user data', error);
       }
@@ -35,7 +35,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
 
     const loadMessages = async () => {
       try {
-        // Retrieve messages from AsyncStorage and set them in state
+     
         const storedMessages = await AsyncStorage.getItem('messages');
         if (storedMessages) {
           setMessages(JSON.parse(storedMessages));
@@ -54,15 +54,15 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       const newMessage = {
         id: Date.now().toString(),
         text: message,
-        sender: fullName || 'unknown', // If fullName is not fetched, fallback to 'unknown'
-        senderRole: role || 'Farmer', // Default role for now
-        senderImage: userImage, // Replace with the logged-in user's image
+        sender: fullName || 'unknown', 
+        senderRole: role || 'Farmer', 
+        senderImage: userImage,
         createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
       const updatedMessages = [newMessage, ...messages];
       
-      // Save messages to AsyncStorage
+  
       try {
         await AsyncStorage.setItem('messages', JSON.stringify(updatedMessages));
         setMessages(updatedMessages);
@@ -80,7 +80,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       <View style={styles.messageHeader}>
         <Image source={typeof item.senderImage === 'string' ? { uri: item.senderImage } : item.senderImage} style={styles.profileImage} />
         <View style={styles.messageHeaderText}>
-          {/* Display fullName as sender and role as senderRole */}
+    
           <Text style={[styles.sender, item.sender === fullName && styles.userSender]}>{item.sender}</Text>
           <Text style={[styles.senderRole, item.sender === fullName && styles.userSenderRole]}>{item.senderRole}</Text>
         </View>
@@ -149,11 +149,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   userMessage: {
-    backgroundColor: '#026338', // Light green for current user’s messages
+    backgroundColor: '#026338',
     borderRadius: 10,
   },
   userMessageText: {
-    color: 'white', // White text color for the current user's messages
+    color: 'white', 
   },
   messageHeader: {
     flexDirection: 'row',
@@ -172,17 +172,17 @@ const styles = StyleSheet.create({
   sender: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#026338', // Default sender name color
+    color: '#026338', 
   },
   senderRole: {
     fontSize: 12,
-    color: '#026338', // Default sender role color
+    color: '#026338', 
   },
   userSender: {
-    color: 'white', // White color for logged-in user's name
+    color: 'white', 
   },
   userSenderRole: {
-    color: 'white', // White color for logged-in user's role
+    color: 'white', 
   },
   messageText: {
     fontSize: 16,

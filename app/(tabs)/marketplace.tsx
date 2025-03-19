@@ -138,7 +138,7 @@ const MarketPlaceScreen = () => {
         </Modal>
       )}
 
-      {/* Add Product Modal */}
+
       <Modal visible={isModalVisible && !selectedProduct} animationType="fade" onRequestClose={() => setIsModalVisible(false)}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Add Product</Text>
