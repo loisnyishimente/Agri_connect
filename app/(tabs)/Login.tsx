@@ -19,6 +19,7 @@ const Login = () => {
 
 
 
+
   const handleSignIn = async () => {
     try {
       const userData = await AsyncStorage.getItem("user");
@@ -41,7 +42,7 @@ const Login = () => {
   };
 
   const handleAdminLogin = () => {
-    navigation.navigate("loginAsAdmin");
+    navigation.replace("loginAsAdmin");
   };
 
   return (

@@ -92,7 +92,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Community Chat</Text>
+        <Text style={styles.headerTitle}>Forum Chat</Text>
       </View>
 
       {/* Message List */}
