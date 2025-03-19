@@ -26,13 +26,6 @@ const KnowledgeScreen = () => {
       category: 'Pest Control',
       date: '2025-03-05',
     },
-    {
-      id: '3',
-      title: 'Irrigation Techniques for Better Yields',
-      description: 'Understand the irrigation systems that can improve crop yields.',
-      category: 'Irrigation',
-      date: '2025-02-20',
-    },
   ]);
 
   const [modalVisible, setModalVisible] = useState(false);

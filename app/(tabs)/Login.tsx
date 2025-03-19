@@ -32,7 +32,7 @@ const Login = () => {
       const storedUser = JSON.parse(userData);
       if (storedUser.email === email && storedUser.password === password) {
         Alert.alert("Success", "Login successful!");
-        navigation.replace("Main");
+        navigation.navigate("Main");
       } else {
         Alert.alert("Error", "Invalid email or password.");
       }

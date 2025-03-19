@@ -1,98 +1,97 @@
-import { Image, Pressable, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
+import { useRouter } from "expo-router";
 import { TextInput } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomInput from "@/components/form/customInput";
 import CustomButton from "@/components/form/customButton";
-import { TouchableOpacity } from "react-native";
-import { router } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View } from "@/components/View";
 import { Text } from "@/components/Text";
 
-const Signup = () => {
-  const [fullName, setFullName] = useState("");
+const Login = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [region, setRegion] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSignup = async () => {
-    if (!fullName || !email || !password || !confirmPassword || !region) {
-      Alert.alert("Error", "Please fill all the fields.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
+  const handleSignIn = async () => {
     try {
-      const user = { fullName, email, password, role: "farmer", region };
-      await AsyncStorage.setItem('user', JSON.stringify(user));
-      Alert.alert("Success", "Signup successful!");
-      router.push("/Login");
+      const userData = await AsyncStorage.getItem("user");
+
+      if (!userData) {
+        Alert.alert("Error", "No user found. Please sign up first.");
+        return;
+      }
+
+      const storedUser = JSON.parse(userData);
+      if (storedUser.email === email && storedUser.password === password) {
+        Alert.alert("Success", "Login successful!");
+        router.push("/");
+      } else {
+        Alert.alert("Error", "Invalid email or password.");
+      }
     } catch (error) {
-      Alert.alert("Error", "An error occurred during signup. Please try again.");
-    } finally {
-      setLoading(false);
+      console.error("Error during login:", error);
     }
+  };
+
+  const handleAdminLogin = () => {
+    router.replace("/loginAsAdmin");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}></View>
-      <View style={styles.formContainer}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>Agri</Text>
-          <Text style={[styles.logoText, styles.logoHighlight]}>Connect</Text>
+      <View style={styles.mainContent}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Agri</Text>
+          <Text style={[styles.title, styles.highlightedText]}>Connect</Text>
         </View>
-        <Text style={styles.welcomeText}>Welcome...</Text>
-        <Text style={styles.subText}>Create an account to get started</Text>
-
-        <View style={styles.formFields}>
-          <CustomInput left={<TextInput.Icon icon="account" />} label="Full Name" value={fullName} onChangeText={setFullName} />
-          <CustomInput left={<TextInput.Icon icon="mail" />} label="Email" value={email} onChangeText={setEmail} />
-          <CustomInput left={<TextInput.Icon icon="lock" />} label="Password" secureTextEntry value={password} onChangeText={setPassword} />
-          <CustomInput left={<TextInput.Icon icon="lock" />} label="Confirm Password" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
-          <CustomInput left={<TextInput.Icon icon="map" />} label="Region" value={region} onChangeText={setRegion} />
+        <View>
+          <Text style={styles.welcomeText}>Welcome...</Text>
+          <Text style={styles.signInText}>Sign In to continue</Text>
         </View>
-
-        <View style={styles.buttonContainer}>
-          <CustomButton buttonText="Sign Up" onPress={handleSignup} />
+        <View style={styles.formContainer}>
+          <CustomInput
+            left={<TextInput.Icon icon="mail" />}
+            label="Your Email"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+          />
+          <CustomInput
+            left={<TextInput.Icon icon="lock" />}
+            label="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            style={styles.input}
+          />
         </View>
-
-        {loading && <ActivityIndicator size="large" color="#026338" />}
-
+        <CustomButton
+          buttonText="Sign In"
+          style={styles.signInButton}
+          onPress={handleSignIn}
+        />
         <View style={styles.orContainer}>
-          <View style={styles.divider}></View>
+          <View style={styles.separator}></View>
           <Text>OR</Text>
-          <View style={styles.divider}></View>
+          <View style={styles.separator}></View>
         </View>
+        <TouchableOpacity
+          style={styles.socialButton}
+          onPress={handleAdminLogin}
+        >
+          <View style={styles.socialButtonContent}>
+            <Text style={styles.socialText}>Login as Admin</Text>
+          </View>
+        </TouchableOpacity>
 
-        <View style={styles.socialLoginContainer}>
-          <TouchableOpacity style={styles.socialButton} onPress={() => console.log("Google signup pressed")}> 
-            <View style={styles.socialButtonContent}>
-              <Image source={require('../../Images/google.png')} style={styles.socialIcon} />
-              <Text style={styles.socialButtonText}>Sign Up with Google</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.socialButton} onPress={() => console.log("Facebook signup pressed")}> 
-            <View style={styles.socialButtonContent}>
-              <Image source={require('../../Images/facebook.png')} style={styles.socialIcon} />
-              <Text style={styles.socialButtonText}>Sign Up with Facebook</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.loginPromptContainer}>
-          <Text>Already have an account?</Text>
-          <Pressable onPress={() => router.push("/Login")}>
-            <Text style={styles.loginText}>Login</Text>
+        <Text style={styles.forgotPassword}>Forgot password?</Text>
+        <View style={styles.registerContainer}>
+          <Text>Don't have an account?</Text>
+          <Pressable onPress={() => router.push("/SignUp")}>
+            <Text style={styles.registerText}>Register</Text>
           </Pressable>
         </View>
       </View>
@@ -100,101 +99,105 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
+    backgroundColor: "#fff",
   },
   header: {
     height: 160,
-    backgroundColor: '#026338',
+    backgroundColor: "#026338",
   },
-  formContainer: {
-    position: 'absolute',
-    top: 160,
+  mainContent: {
+    position: "absolute",
+    top: 120,
     left: 0,
     right: 0,
+    bottom: 0,
     padding: 16,
-    backgroundColor: '#fff',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
+    backgroundColor: "#fff",
   },
-  logoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  titleContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     paddingVertical: 16,
   },
-  logoText: {
+  title: {
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
   },
-  logoHighlight: {
-    color: '#026338',
+  highlightedText: {
+    color: "#026338",
   },
   welcomeText: {
     fontSize: 18,
-    color: '#0e244e9e',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "700",
+    color: "#0e244e9e",
+    textAlign: "center",
   },
-  subText: {
+  signInText: {
     fontSize: 14,
-    color: '#626262',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "600",
+    color: "#626262",
+    textAlign: "center",
     paddingVertical: 8,
   },
-  formFields: {
-    paddingBottom: 16,
-  },
-  buttonContainer: {
+  formContainer: {
     paddingVertical: 16,
   },
-  orContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-  },
-  divider: {
-    height: 1,
-    width: '40%',
-    backgroundColor: '#E6E8EE',
-  },
-  socialLoginContainer: {
-    paddingVertical: 16,
-  },
-  socialButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: '#E6E8EE',
-    borderRadius: 8,
+  input: {
     marginBottom: 12,
   },
-  socialButtonContent: { // ✅ Added missing style
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+  signInButton: {
+    marginVertical: 12,
   },
-  socialIcon: {
-    height: 20,
-    width: 20,
-    marginRight: 8,
+  orContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 16,
   },
-  socialButtonText: {
-    color: '#026338',
-    fontSize: 14,
-    fontWeight: '600',
+  separator: {
+    height: 1,
+    width: "40%",
+    backgroundColor: "#D1D1D1",
   },
-  loginPromptContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  socialButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#D1D1D1",
+    borderRadius: 8,
     paddingVertical: 12,
+    marginVertical: 8,
   },
-  loginText: {
-    color: '#026338',
-    fontWeight: '600',
+  socialButtonContent: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  socialText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#026338",
+  },
+  forgotPassword: {
+    textAlign: "center",
+    color: "#026338",
+    marginVertical: 8,
+  },
+  registerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 16,
+  },
+  registerText: {
+    color: "#026338",
+    fontWeight: "700",
   },
 });
