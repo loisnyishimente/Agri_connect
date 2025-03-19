@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, ImageSourcePropType } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image, Modal, Button, ImageSourcePropType } from 'react-native';
 
 import tomatoSeeds from '../../Images/successtory.png';
 import tractor from '../../Images/successtory.png';
@@ -23,7 +23,7 @@ const MarketPlaceScreen = () => {
       title: 'Organic Tomato Seeds',
       description: 'High-quality organic tomato seeds for your farm.',
       price: '$10.00',
-      imageUrl: tomatoSeeds, 
+      imageUrl: tomatoSeeds,
       category: 'Seeds',
       seller: 'AgriSeeds Co.',
     },
@@ -46,11 +46,42 @@ const MarketPlaceScreen = () => {
       seller: 'AgriFert Ltd.',
     },
   ]);
+  
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const [newProduct, setNewProduct] = useState<Product>({
+    id: '',
+    title: '',
+    description: '',
+    price: '',
+    imageUrl: '',
+    category: '',
+    seller: '',
+  });
+
+  const handleViewDetails = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalVisible(true);
+  };
+
+  const handleAddProduct = () => {
+    setProducts([...products, { ...newProduct, id: String(products.length + 1) }]);
+    setNewProduct({
+      id: '',
+      title: '',
+      description: '',
+      price: '',
+      imageUrl: '',
+      category: '',
+      seller: '',
+    });
+    setIsModalVisible(false);
+  };
 
   const renderProductItem = ({ item }: { item: Product }) => (
     <View style={styles.productItem}>
-     <Image source={typeof item.imageUrl === 'string' ? { uri: item.imageUrl } : item.imageUrl} style={styles.productImage} />
-
+      <Image source={typeof item.imageUrl === 'string' ? { uri: item.imageUrl } : item.imageUrl} style={styles.productImage} />
       <View style={styles.productInfo}>
         <Text style={styles.productTitle}>{item.title}</Text>
         <Text style={styles.productDescription}>{item.description}</Text>
@@ -58,7 +89,7 @@ const MarketPlaceScreen = () => {
         <Text style={styles.productSeller}>Seller: {item.seller}</Text>
         <TouchableOpacity
           style={styles.viewDetailsButton}
-          onPress={() => alert(`Viewing details of ${item.title}`)}
+          onPress={() => handleViewDetails(item)}
         >
           <Text style={styles.viewDetailsButtonText}>View Details</Text>
         </TouchableOpacity>
@@ -67,21 +98,95 @@ const MarketPlaceScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Marketplace</Text>
+
       <TextInput
         style={styles.searchInput}
         placeholder="Search for products..."
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
+
       <FlatList
         data={products}
         renderItem={renderProductItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.productList}
       />
-    </ScrollView>
+
+      <TouchableOpacity style={styles.addProductButton} onPress={() => setIsModalVisible(true)}>
+        <Text style={styles.addProductButtonText}>Add Product</Text>
+      </TouchableOpacity>
+
+      {/* Modal for Product Details */}
+      {selectedProduct && (
+        <Modal visible={isModalVisible && !!selectedProduct} animationType="slide" onRequestClose={() => setIsModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <Image source={typeof selectedProduct.imageUrl === 'string' ? { uri: selectedProduct.imageUrl } : selectedProduct.imageUrl} style={styles.productImage} />
+            <Text style={styles.productTitle}>{selectedProduct.title}</Text>
+            <Text style={styles.productDescription}>{selectedProduct.description}</Text>
+            <Text style={styles.productPrice}>{selectedProduct.price}</Text>
+            <Text style={styles.productSeller}>Seller: {selectedProduct.seller}</Text>
+            <TouchableOpacity
+              style={styles.closeModalButton}
+              onPress={() => setIsModalVisible(false)}
+            >
+              <Text style={styles.closeModalButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      )}
+
+      {/* Add Product Modal */}
+      <Modal visible={isModalVisible && !selectedProduct} animationType="fade" onRequestClose={() => setIsModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Add Product</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Title"
+            value={newProduct.title}
+            onChangeText={(text) => setNewProduct({ ...newProduct, title: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            value={newProduct.description}
+            onChangeText={(text) => setNewProduct({ ...newProduct, description: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Price"
+            value={newProduct.price}
+            onChangeText={(text) => setNewProduct({ ...newProduct, price: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Category"
+            value={newProduct.category}
+            onChangeText={(text) => setNewProduct({ ...newProduct, category: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Seller"
+            value={newProduct.seller}
+            onChangeText={(text) => setNewProduct({ ...newProduct, seller: text })}
+          />
+          <TouchableOpacity
+            style={styles.addProductButton}
+            onPress={handleAddProduct}
+          >
+            <Text style={styles.addProductButtonText}>Add Product</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.closeModalButton}
+            onPress={() => setIsModalVisible(false)}
+          >
+            <Text style={styles.closeModalButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
@@ -156,6 +261,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewDetailsButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  addProductButton: {
+    marginTop: 20,
+    backgroundColor: '#026338',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  addProductButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#fff',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginBottom: 10,
+    width: '100%',
+    color: '#000',
+    backgroundColor: '#fff',
+  },
+  closeModalButton: {
+    marginTop: 10,
+    backgroundColor: '#026338',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  closeModalButtonText: {
     color: '#fff',
     fontSize: 14,
   },

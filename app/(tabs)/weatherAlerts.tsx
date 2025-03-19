@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, Modal, TextInput, Button } from 'react-native';
 
 type WeatherAlert = {
   id: string;
@@ -22,15 +22,7 @@ const WeatherAlertsScreen = () => {
       location: 'Northern Region',
       category: 'Storm',
     },
-    {
-      id: '2',
-      title: 'Heatwave Alert',
-      description: 'A heatwave is expected in the Southern Region, with temperatures reaching over 40°C.',
-      severity: 'High',
-      date: '2025-03-20',
-      location: 'Southern Region',
-      category: 'Heatwave',
-    },
+   
     {
       id: '3',
       title: 'Heavy Rainfall Warning',
@@ -40,8 +32,33 @@ const WeatherAlertsScreen = () => {
       location: 'Eastern Region',
       category: 'Rain',
     },
-    // More weather alerts can be added here...
   ]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [newAlert, setNewAlert] = useState<WeatherAlert>({
+    id: '',
+    title: '',
+    description: '',
+    severity: '',
+    date: '',
+    location: '',
+    category: '',
+  });
+
+  const handleAddAlert = () => {
+    const newId = (alerts.length + 1).toString();
+    setAlerts([...alerts, { ...newAlert, id: newId }]);
+    setShowModal(false);
+    setNewAlert({
+      id: '',
+      title: '',
+      description: '',
+      severity: '',
+      date: '',
+      location: '',
+      category: '',
+    });
+  };
 
   const renderAlertItem = ({ item }: { item: WeatherAlert }) => (
     <View style={styles.alertItem}>
@@ -54,7 +71,6 @@ const WeatherAlertsScreen = () => {
       <TouchableOpacity
         style={styles.viewDetailsButton}
         onPress={() => {
-          // Handle the view details action, could navigate to a detailed alert screen
           alert(`Viewing details of the alert: ${item.title}`);
         }}
       >
@@ -66,6 +82,14 @@ const WeatherAlertsScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Weather Alerts</Text>
+
+      {/* Add Weather Alert Button */}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => setShowModal(true)}
+      >
+        <Text style={styles.addButtonText}>Add Weather Alert</Text>
+      </TouchableOpacity>
 
       {/* Category filter could be added here */}
       <View style={styles.filterContainer}>
@@ -89,6 +113,54 @@ const WeatherAlertsScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.alertList}
       />
+
+      {/* Modal to Add New Weather Alert */}
+      <Modal visible={showModal} animationType="slide" transparent={true}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Add Weather Alert</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Title"
+              value={newAlert.title}
+              onChangeText={(text) => setNewAlert({ ...newAlert, title: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              value={newAlert.description}
+              onChangeText={(text) => setNewAlert({ ...newAlert, description: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Severity"
+              value={newAlert.severity}
+              onChangeText={(text) => setNewAlert({ ...newAlert, severity: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Date"
+              value={newAlert.date}
+              onChangeText={(text) => setNewAlert({ ...newAlert, date: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Location"
+              value={newAlert.location}
+              onChangeText={(text) => setNewAlert({ ...newAlert, location: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Category (e.g., Storm, Heatwave, Rain)"
+              value={newAlert.category}
+              onChangeText={(text) => setNewAlert({ ...newAlert, category: text })}
+            />
+
+            <Button color="#026338" title="Add Alert" onPress={handleAddAlert} />
+       
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -104,6 +176,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  addButton: {
+    backgroundColor: '#026338',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
   filterContainer: {
     flexDirection: 'row',
@@ -167,6 +250,32 @@ const styles = StyleSheet.create({
   viewDetailsButtonText: {
     color: '#fff',
     fontSize: 14,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 8,
+    borderRadius: 4,
   },
 });
 

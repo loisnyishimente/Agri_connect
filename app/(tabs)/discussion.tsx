@@ -12,8 +12,7 @@ type Discussion = {
 
 const DiscussionScreen = ({ navigation }: any) => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
-  const [newTitle, setNewTitle] = useState<string>(''); // New title for the discussion
-  const [newContent, setNewContent] = useState<string>(''); // New content for the discussion
+  const [newDiscussion, setNewDiscussion] = useState<string>('');
   const [fullName, setFullName] = useState<string>(''); // Store the full name of the user
 
   useEffect(() => {
@@ -26,47 +25,55 @@ const DiscussionScreen = ({ navigation }: any) => {
         } else {
           setFullName('Guest'); // Fallback if no user is found
         }
+
+        // Fetch discussions including the sample discussion
+        fetchDiscussions();
       } catch (error) {
         console.error('Error fetching user name', error);
       }
     };
 
     fetchUserName();
-
-    // Static sample data for discussions
-    const sampleData: Discussion[] = [
-      {
-        id: '1',
-        title: 'Sustainable Farming Practices',
-        content: 'Discuss the best practices for sustainable farming and agriculture.',
-        createdAt: '2025-03-15 10:00 AM',
-        author: 'musimenta lois',
-      },
-      {
-        id: '2',
-        title: 'Latest Advances in Irrigation Systems',
-        content: 'What are the newest technologies in irrigation systems for better crop yields?',
-        createdAt: '2025-03-16 12:30 PM',
-        author: 'Aline kalisa',
-      },
-    ];
-
-    setDiscussions(sampleData); // Initial discussions
   }, []);
 
+  // Function to fetch discussions from AsyncStorage, including the sample discussion
+  const fetchDiscussions = async () => {
+    try {
+      const storedDiscussions = await AsyncStorage.getItem('discussions');
+      const parsedDiscussions: Discussion[] = storedDiscussions ? JSON.parse(storedDiscussions) : [];
+
+      // Check if sample discussion already exists, if not, add it
+      const sampleDiscussion: Discussion = {
+        id: '1',
+        title: 'Sample Discussion',
+        content: 'This is a sample discussion available for all users.',
+        createdAt: '2023-12-25 12:00 PM',
+        author: 'Admin', // You can customize the author
+      };
+
+      // Add the sample discussion if not already present
+      if (!parsedDiscussions.some((discussion) => discussion.id === sampleDiscussion.id)) {
+        parsedDiscussions.unshift(sampleDiscussion);
+      }
+
+      setDiscussions(parsedDiscussions);
+    } catch (error) {
+      console.error('Error fetching discussions', error);
+    }
+  };
+
   const handleCreateDiscussion = async () => {
-    if (newTitle.trim() && newContent.trim()) {
+    if (newDiscussion.trim()) {
       const newPost: Discussion = {
         id: String(discussions.length + 1),
-        title: newTitle,
-        content: newContent,
+        title: newDiscussion,
+        content: 'This is a new discussion.',
         createdAt: new Date().toLocaleString(),
         author: fullName || 'Guest', // Use fullName as the author
       };
       const updatedDiscussions = [newPost, ...discussions]; // Add new post to the top of the list
       setDiscussions(updatedDiscussions);
-      setNewTitle(''); // Reset the title input field
-      setNewContent(''); // Reset the content input field
+      setNewDiscussion(''); // Reset the input field
 
       // Save updated discussions to AsyncStorage
       try {
@@ -74,8 +81,6 @@ const DiscussionScreen = ({ navigation }: any) => {
       } catch (error) {
         console.error('Error saving discussions', error);
       }
-    } else {
-      console.error('Title and content are required');
     }
   };
 
@@ -107,16 +112,9 @@ const DiscussionScreen = ({ navigation }: any) => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Discussion title"
-          value={newTitle}
-          onChangeText={setNewTitle}
-        />
-        <TextInput
-          style={[styles.input, { height: 50 }]} // Adjust the height for the content input
           placeholder="Start a new discussion"
-          value={newContent}
-          onChangeText={setNewContent}
-          multiline // Allows multiline text input for content
+          value={newDiscussion}
+          onChangeText={setNewDiscussion}
         />
         <Button title="Post" onPress={handleCreateDiscussion} color="#026338" />
       </View>

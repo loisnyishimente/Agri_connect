@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Linking, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Linking, StyleSheet, Modal, Button } from 'react-native';
 
 interface Webinar {
   id: string;
@@ -24,15 +24,6 @@ const WebinarsScreen = () => {
       link: 'https://zoom.us/xyz123',
     },
     {
-      id: '2',
-      title: 'Soil Health for Better Crops',
-      description: 'Understanding soil health and its role in sustainable agriculture.',
-      category: 'Soil Health',
-      date: '2025-03-12',
-      time: '2:00 PM',
-      link: 'https://zoom.us/abc456',
-    },
-    {
       id: '3',
       title: 'Pest Control Strategies',
       description: 'Best practices for pest control in organic farming.',
@@ -42,6 +33,17 @@ const WebinarsScreen = () => {
       link: 'https://zoom.us/def789',
     },
   ]);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [newWebinar, setNewWebinar] = useState<Webinar>({
+    id: '',
+    title: '',
+    description: '',
+    category: '',
+    date: '',
+    time: '',
+    link: '',
+  });
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -62,15 +64,6 @@ const WebinarsScreen = () => {
           link: 'https://zoom.us/xyz123',
         },
         {
-          id: '2',
-          title: 'Soil Health for Better Crops',
-          description: 'Understanding soil health and its role in sustainable agriculture.',
-          category: 'Soil Health',
-          date: '2025-03-12',
-          time: '2:00 PM',
-          link: 'https://zoom.us/abc456',
-        },
-        {
           id: '3',
           title: 'Pest Control Strategies',
           description: 'Best practices for pest control in organic farming.',
@@ -80,6 +73,26 @@ const WebinarsScreen = () => {
           link: 'https://zoom.us/def789',
         },
       ]);
+    }
+  };
+
+  const addWebinar = () => {
+    if (newWebinar.title && newWebinar.description && newWebinar.category && newWebinar.date && newWebinar.time && newWebinar.link) {
+      const newId = (webinars.length + 1).toString();
+      const newWebinarData = { ...newWebinar, id: newId };
+      setWebinars([...webinars, newWebinarData]);
+      setModalVisible(false);
+      setNewWebinar({
+        id: '',
+        title: '',
+        description: '',
+        category: '',
+        date: '',
+        time: '',
+        link: '',
+      });
+    } else {
+      alert('Please fill in all fields.');
     }
   };
 
@@ -129,6 +142,66 @@ const WebinarsScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.webinarList}
       />
+
+      {/* Add Webinar Button */}
+      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.addButtonText}>Add Webinar</Text>
+      </TouchableOpacity>
+
+      {/* Add Webinar Modal */}
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add New Webinar</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Title"
+              value={newWebinar.title}
+              onChangeText={(text) => setNewWebinar({ ...newWebinar, title: text })}
+            />
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Description"
+              value={newWebinar.description}
+              onChangeText={(text) => setNewWebinar({ ...newWebinar, description: text })}
+            />
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Category"
+              value={newWebinar.category}
+              onChangeText={(text) => setNewWebinar({ ...newWebinar, category: text })}
+            />
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Date"
+              value={newWebinar.date}
+              onChangeText={(text) => setNewWebinar({ ...newWebinar, date: text })}
+            />
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Time"
+              value={newWebinar.time}
+              onChangeText={(text) => setNewWebinar({ ...newWebinar, time: text })}
+            />
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Link"
+              value={newWebinar.link}
+              onChangeText={(text) => setNewWebinar({ ...newWebinar, link: text })}
+            />
+
+            <View style={styles.modalButtons}>
+              <Button color='red' title="Cancel" onPress={() => setModalVisible(false)} />
+              <Button color='#026338' title="Add Webinar" onPress={addWebinar} />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -215,6 +288,46 @@ const styles = StyleSheet.create({
   joinButtonText: {
     color: '#fff',
     fontSize: 14,
+  },
+  addButton: {
+    backgroundColor: '#026338',
+    paddingVertical: 10,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 8,
+    marginBottom: 12,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
