@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Button, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { 
+  View, Text, FlatList, TextInput, Button, 
+  StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform 
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Discussion = {
@@ -12,7 +15,8 @@ type Discussion = {
 
 const DiscussionScreen = ({ navigation }: any) => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
-  const [newDiscussion, setNewDiscussion] = useState<string>('');
+  const [newDiscussionTitle, setNewDiscussionTitle] = useState<string>('');
+  const [newDiscussionContent, setNewDiscussionContent] = useState<string>('');
   const [fullName, setFullName] = useState<string>(''); 
 
   useEffect(() => {
@@ -26,7 +30,6 @@ const DiscussionScreen = ({ navigation }: any) => {
           setFullName('Guest'); 
         }
 
-       
         fetchDiscussions();
       } catch (error) {
         console.error('Error fetching user name', error);
@@ -41,7 +44,6 @@ const DiscussionScreen = ({ navigation }: any) => {
       const storedDiscussions = await AsyncStorage.getItem('discussions');
       const parsedDiscussions: Discussion[] = storedDiscussions ? JSON.parse(storedDiscussions) : [];
 
-     
       const sampleDiscussion: Discussion = {
         id: '1',
         title: 'Sample Discussion',
@@ -50,7 +52,6 @@ const DiscussionScreen = ({ navigation }: any) => {
         author: 'Admin',
       };
 
-  
       if (!parsedDiscussions.some((discussion) => discussion.id === sampleDiscussion.id)) {
         parsedDiscussions.unshift(sampleDiscussion);
       }
@@ -62,19 +63,20 @@ const DiscussionScreen = ({ navigation }: any) => {
   };
 
   const handleCreateDiscussion = async () => {
-    if (newDiscussion.trim()) {
+    if (newDiscussionTitle.trim() && newDiscussionContent.trim()) {
       const newPost: Discussion = {
         id: String(discussions.length + 1),
-        title: newDiscussion,
-        content: 'This is a new discussion.',
+        title: newDiscussionTitle,
+        content: newDiscussionContent,
         createdAt: new Date().toLocaleString(),
         author: fullName || 'Guest', 
       };
+
       const updatedDiscussions = [newPost, ...discussions]; 
       setDiscussions(updatedDiscussions);
-      setNewDiscussion(''); 
+      setNewDiscussionTitle('');
+      setNewDiscussionContent('');
 
-      
       try {
         await AsyncStorage.setItem('discussions', JSON.stringify(updatedDiscussions));
       } catch (error) {
@@ -111,9 +113,16 @@ const DiscussionScreen = ({ navigation }: any) => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Start a new discussion"
-          value={newDiscussion}
-          onChangeText={setNewDiscussion}
+          placeholder="Enter discussion title"
+          value={newDiscussionTitle}
+          onChangeText={setNewDiscussionTitle}
+        />
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Enter discussion content"
+          value={newDiscussionContent}
+          onChangeText={setNewDiscussionContent}
+          multiline
         />
         <Button title="Post" onPress={handleCreateDiscussion} color="#026338" />
       </View>
@@ -182,6 +191,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingLeft: 10,
     marginBottom: 10,
+  },
+  textArea: {
+    height: 60, 
+    textAlignVertical: 'top',
   },
 });
 
