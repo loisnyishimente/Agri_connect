@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
+import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity, ScrollView, Modal, Button, Linking } from 'react-native';
 
 type KnowledgeArticle = {
   id: string;
@@ -7,6 +7,7 @@ type KnowledgeArticle = {
   description: string;
   category: string;
   date: string;
+  pdfLink: string; // New field for the PDF link
 };
 
 const KnowledgeScreen = () => {
@@ -18,6 +19,7 @@ const KnowledgeScreen = () => {
       description: 'Learn the best practices to keep your soil healthy and productive.',
       category: 'Soil Health',
       date: '2025-03-01',
+      pdfLink: 'https://example.com/soil-health.pdf', // Example PDF link
     },
     {
       id: '2',
@@ -25,6 +27,7 @@ const KnowledgeScreen = () => {
       description: 'Explore the most effective ways to manage pests in your crops.',
       category: 'Pest Control',
       date: '2025-03-05',
+      pdfLink: 'https://example.com/pest-control.pdf', // Example PDF link
     },
   ]);
 
@@ -35,6 +38,7 @@ const KnowledgeScreen = () => {
     description: '',
     category: '',
     date: '',
+    pdfLink: '', // New field for PDF link
   });
 
   const handleSearch = (query: string) => {
@@ -52,6 +56,7 @@ const KnowledgeScreen = () => {
           description: 'Learn the best practices to keep your soil healthy and productive.',
           category: 'Soil Health',
           date: '2025-03-01',
+          pdfLink: 'https://example.com/soil-health.pdf',
         },
         {
           id: '2',
@@ -59,6 +64,7 @@ const KnowledgeScreen = () => {
           description: 'Explore the most effective ways to manage pests in your crops.',
           category: 'Pest Control',
           date: '2025-03-05',
+          pdfLink: 'https://example.com/pest-control.pdf',
         },
         {
           id: '3',
@@ -66,6 +72,7 @@ const KnowledgeScreen = () => {
           description: 'Understand the irrigation systems that can improve crop yields.',
           category: 'Irrigation',
           date: '2025-02-20',
+          pdfLink: 'https://example.com/irrigation-techniques.pdf', // Example PDF link
         },
       ]);
     }
@@ -86,7 +93,12 @@ const KnowledgeScreen = () => {
       description: '',
       category: '',
       date: '',
+      pdfLink: '', // Reset PDF link
     });
+  };
+
+  const handleReadArticle = (pdfLink: string) => {
+    Linking.openURL(pdfLink).catch((err) => console.error('Failed to open PDF link', err));
   };
 
   const renderArticleItem = ({ item }: { item: KnowledgeArticle }) => (
@@ -95,6 +107,14 @@ const KnowledgeScreen = () => {
       <Text style={styles.articleCategory}>Category: {item.category}</Text>
       <Text style={styles.articleDescription}>{item.description}</Text>
       <Text style={styles.articleDate}>Published on: {item.date}</Text>
+
+      {/* Read Article Button */}
+      <TouchableOpacity 
+        style={styles.readArticleButton} 
+        onPress={() => handleReadArticle(item.pdfLink)}
+      >
+        <Text style={styles.readArticleButtonText}>Read Article</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -164,6 +184,12 @@ const KnowledgeScreen = () => {
               placeholder="Date (YYYY-MM-DD)"
               value={newArticle.date}
               onChangeText={(text) => setNewArticle({ ...newArticle, date: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="PDF Link"
+              value={newArticle.pdfLink}
+              onChangeText={(text) => setNewArticle({ ...newArticle, pdfLink: text })}
             />
             <View style={styles.modalButtons}>
               <Button title="Cancel" onPress={() => setModalVisible(false)} />
@@ -242,6 +268,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#aaa',
     marginTop: 10,
+  },
+  readArticleButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#026338',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  readArticleButtonText: {
+    color: '#fff',
+    fontSize: 14,
   },
   addArticleButton: {
     padding: 15,
