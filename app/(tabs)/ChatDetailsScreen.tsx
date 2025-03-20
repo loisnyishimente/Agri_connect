@@ -23,7 +23,11 @@ const ChatDetailScreen: React.FC = () => {
 
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', text: 'Hey! How are you?', sender: 'them', status: 'sent' },
-    { id: '2', text: 'I’m good, what about you?', sender: 'me', status: 'delivered' },
+    { id: '2', text: 'I’m good, what about you?', sender: 'me', status: 'sent' },
+    { id: '3', text: 'Im also doing grt', sender: 'them', status: 'delivered' },
+    { id: '4', text: 'I have question', sender: 'me', status: 'sent' },
+    { id: '5', text: 'which Question', sender: 'them', status: 'delivered' },
+   
   ]);
 
   const [newMessage, setNewMessage] = useState('');
