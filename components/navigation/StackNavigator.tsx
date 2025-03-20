@@ -4,7 +4,7 @@ import Login from "../../app/(tabs)/Login";
 import Signup from "../../app/(tabs)/SignUp";
 import CommunityChatScreen from "../../app/(tabs)/discussionChat";
 import AdminLogin from "../../app/(tabs)/loginAsAdmin";
-import ChatDetailScreen from "../../app/(tabs)/chatDetailScreen";
+import ChatDetailScreen from "../../app/(tabs)/ChatDetailsScreen";
 import TabNavigator from "../navigation/TabNavigator";
 
 
@@ -13,7 +13,7 @@ export type StackParamList = {
   Login: undefined;
   SignUp: undefined;
   discussionChat:undefined;
-  chatDetailScreen: { chatId: string; chatName: string }; 
+  ChatDetailsScreen: { chatId: string; chatName: string }; 
   loginAsAdmin:undefined;
 };
 
@@ -26,7 +26,7 @@ const StackNavigator = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={Signup} />
       <Stack.Screen name="discussionChat" component={CommunityChatScreen} />
-      <Stack.Screen name="chatDetailScreen" component={ChatDetailScreen} />
+      <Stack.Screen name="ChatDetailsScreen" component={ChatDetailScreen} />
       <Stack.Screen name="loginAsAdmin" component={AdminLogin} />
 
     </Stack.Navigator>

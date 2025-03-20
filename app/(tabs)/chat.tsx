@@ -26,7 +26,7 @@ interface Chat {
 }
 
 type RootStackParamList = {
-  ChatDetailScreen: { chatId: string; chatName: string };
+  ChatDetailsScreen: { chatId: string; chatName: string };
 };
 
 const ChatScreen: React.FC = () => {
@@ -68,7 +68,7 @@ const ChatScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleOpenChat = (chat: Chat) => {
-    navigation.navigate("ChatDetailScreen", {  
+    navigation.navigate("ChatDetailsScreen", {  
       chatId: chat.id,
       chatName: chat.name,
     });
