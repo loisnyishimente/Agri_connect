@@ -22,11 +22,16 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userFullName = await AsyncStorage.getItem('user');
-        const userRole = await AsyncStorage.getItem('role'); 
-
-        if (userFullName) setUserFullName(userFullName); 
-        if (userRole) setUserRole(userRole);
+    
+        const userData = await AsyncStorage.getItem('user');
+        
+        if (userData) {
+          const { name, role } = JSON.parse(userData);
+          setUserFullName(name);
+          setUserRole(role); 
+        } else {
+          setUserFullName('Guest'); 
+        }
       } catch (error) {
         console.error('Error fetching user data', error);
       }
@@ -256,3 +261,4 @@ const styles = StyleSheet.create({
 });
 
 export default CommunityChatScreen;
+ 

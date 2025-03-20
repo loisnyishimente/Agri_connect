@@ -19,7 +19,7 @@ const KnowledgeScreen = () => {
       description: 'Learn the best practices to keep your soil healthy and productive.',
       category: 'Soil Health',
       date: '2025-03-01',
-      pdfLink: 'https://www.soilhealth.org/soil-health-practices-guide.pdf', // Replace with real link
+      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
     },
     {
       id: '2',
@@ -27,7 +27,7 @@ const KnowledgeScreen = () => {
       description: 'Explore the most effective ways to manage pests in your crops.',
       category: 'Pest Control',
       date: '2025-03-05',
-      pdfLink: 'https://www.pestcontrol.org/tips-for-effective-pest-management.pdf', // Replace with real link
+      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf', 
     },
     {
       id: '3',
@@ -35,9 +35,10 @@ const KnowledgeScreen = () => {
       description: 'Understand the irrigation systems that can improve crop yields.',
       category: 'Irrigation',
       date: '2025-02-20',
-      pdfLink: 'https://www.irrigation.org/better-irrigation-techniques.pdf', // Replace with real link
+      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf', // Example link
     },
   ]);
+  
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newArticle, setNewArticle] = useState<KnowledgeArticle>({
@@ -64,7 +65,7 @@ const KnowledgeScreen = () => {
           description: 'Learn the best practices to keep your soil healthy and productive.',
           category: 'Soil Health',
           date: '2025-03-01',
-          pdfLink: 'https://www.soilhealth.org/soil-health-practices-guide.pdf',
+          pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
         },
         {
           id: '2',
@@ -72,7 +73,7 @@ const KnowledgeScreen = () => {
           description: 'Explore the most effective ways to manage pests in your crops.',
           category: 'Pest Control',
           date: '2025-03-05',
-          pdfLink: 'https://www.pestcontrol.org/tips-for-effective-pest-management.pdf',
+          pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
         },
         {
           id: '3',
@@ -80,7 +81,7 @@ const KnowledgeScreen = () => {
           description: 'Understand the irrigation systems that can improve crop yields.',
           category: 'Irrigation',
           date: '2025-02-20',
-          pdfLink: 'https://www.irrigation.org/better-irrigation-techniques.pdf',
+          pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
         },
       ]);
     }
