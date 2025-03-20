@@ -1,24 +1,22 @@
 import { Pressable, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useState } from "react";
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomInput from "@/components/form/customInput";
 import CustomButton from "@/components/form/customButton";
 import { View } from "@/components/View";
 import { Text } from "@/components/Text";
-import { StackParamList } from "../../components/navigation/StackNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { StackParamList } from "../../components/navigation/StackNavigator"; // Make sure this path is correct
+
 
 const Login = () => {
-  type NavigationProps = NativeStackNavigationProp<StackParamList, "Main">;
-  const navigation = useNavigation<NavigationProps>();
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-
-
 
   const handleSignIn = async () => {
     try {
@@ -32,7 +30,10 @@ const Login = () => {
       const storedUser = JSON.parse(userData);
       if (storedUser.email === email && storedUser.password === password) {
         Alert.alert("Success", "Login successful!");
-        navigation.navigate("Main");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Main" }],
+        });
       } else {
         Alert.alert("Error", "Invalid email or password.");
       }
@@ -42,7 +43,7 @@ const Login = () => {
   };
 
   const handleAdminLogin = () => {
-    navigation.replace("loginAsAdmin");
+    navigation.navigate("loginAsAdmin");
   };
 
   return (
@@ -96,7 +97,7 @@ const Login = () => {
         <Text style={styles.forgotPassword}>Forgot password?</Text>
         <View style={styles.registerContainer}>
           <Text>Don't have an account?</Text>
-          <Pressable onPress={() => navigation.push("SignUp")}>
+          <Pressable onPress={() => navigation.navigate("SignUp")}>
             <Text style={styles.registerText}>Register</Text>
           </Pressable>
         </View>
@@ -106,6 +107,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 const styles = StyleSheet.create({
   container: {

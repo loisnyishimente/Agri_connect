@@ -22,7 +22,6 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-   
         const userFullName = await AsyncStorage.getItem('user');
         const userRole = await AsyncStorage.getItem('role'); 
 
@@ -35,10 +34,39 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
 
     const loadMessages = async () => {
       try {
-     
         const storedMessages = await AsyncStorage.getItem('messages');
         if (storedMessages) {
           setMessages(JSON.parse(storedMessages));
+        } else {
+          // Add default messages if none are stored
+          const defaultMessages = [
+            {
+              id: '1',
+              text: 'Hello, welcome to the forum!',
+              sender: 'Alice',
+              senderRole: 'Admin',
+              createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              senderImage: 'https://randomuser.me/api/portraits/men/1.jpg',
+            },
+            {
+              id: '2',
+              text: 'Good morning everyone!',
+              sender: 'Bob',
+              senderRole: 'Farmer',
+              createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              senderImage: 'https://randomuser.me/api/portraits/women/2.jpg',
+            },
+            {
+              id: '3',
+              text: 'Does anyone have advice on crop rotation?',
+              sender: 'Charlie',
+              senderRole: 'Farmer',
+              createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              senderImage: 'https://randomuser.me/api/portraits/men/3.jpg',
+            },
+          ];
+          setMessages(defaultMessages);
+          await AsyncStorage.setItem('messages', JSON.stringify(defaultMessages));
         }
       } catch (error) {
         console.error('Error loading messages', error);
@@ -54,15 +82,15 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       const newMessage = {
         id: Date.now().toString(),
         text: message,
-        sender: fullName || 'unknown', 
-        senderRole: role || 'Farmer', 
-        senderImage: userImage,
+        sender: fullName || 'unknown', // If fullName is not fetched, fallback to 'unknown'
+        senderRole: role || 'Farmer', // Default role for now
+        senderImage: userImage, // Replace with the logged-in user's image
         createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
       const updatedMessages = [newMessage, ...messages];
       
-  
+      // Save messages to AsyncStorage
       try {
         await AsyncStorage.setItem('messages', JSON.stringify(updatedMessages));
         setMessages(updatedMessages);
@@ -80,7 +108,7 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
       <View style={styles.messageHeader}>
         <Image source={typeof item.senderImage === 'string' ? { uri: item.senderImage } : item.senderImage} style={styles.profileImage} />
         <View style={styles.messageHeaderText}>
-    
+          {/* Display fullName as sender and role as senderRole */}
           <Text style={[styles.sender, item.sender === fullName && styles.userSender]}>{item.sender}</Text>
           <Text style={[styles.senderRole, item.sender === fullName && styles.userSenderRole]}>{item.senderRole}</Text>
         </View>
