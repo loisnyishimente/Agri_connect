@@ -37,25 +37,22 @@ const MyDiaryScreen = () => {
       entries.map((entry) => `Title: ${entry.title}\nDate: ${entry.date}\nDescription: ${entry.description}\n\n`).join('');
 
     const fileUri = FileSystem.documentDirectory + 'FarmDiaryReport.txt';
-
     try {
       await FileSystem.writeAsStringAsync(fileUri, reportContent, { encoding: FileSystem.EncodingType.UTF8 });
-
-      // Ensure the file exists
-      const fileInfo = await FileSystem.getInfoAsync(fileUri);
-      if (fileInfo.exists) {
+    
+      // Check if the file exists
+      const fileContent = await FileSystem.readAsStringAsync(fileUri);
+      if (fileContent) {
         setIsDownloading(false);
-        Alert.alert('Success', 'Diary report generated! Select location to save.');
-        
-        // Use Sharing to let the user choose where to save
-        await Sharing.shareAsync(fileUri);
+        Alert.alert('Success', `Diary report saved to: ${fileUri}`);
       } else {
         setIsDownloading(false);
         Alert.alert('Error', 'Failed to save the file.');
       }
     } catch (error) {
       setIsDownloading(false);
-      Alert.alert('Error', 'Failed to save the file. ' + error.message);
+      const errMsg = error instanceof Error ? error.message : 'Failed to save the file.';
+      Alert.alert('Error', errMsg);
     }
   };
 
