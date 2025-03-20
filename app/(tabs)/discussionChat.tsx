@@ -106,11 +106,21 @@ const CommunityChatScreen = ({ navigation }: { navigation: any }) => {
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={[styles.messageContainer, item.sender === fullName && styles.userMessage]}>
       <View style={styles.messageHeader}>
-        <Image source={typeof item.senderImage === 'string' ? { uri: item.senderImage } : item.senderImage} style={styles.profileImage} />
+        {/* Display profile image for other users */}
+        {item.sender !== fullName && (
+          <Image source={typeof item.senderImage === 'string' ? { uri: item.senderImage } : item.senderImage} style={styles.profileImage} />
+        )}
         <View style={styles.messageHeaderText}>
-          {/* Display fullName as sender and role as senderRole */}
-          <Text style={[styles.sender, item.sender === fullName && styles.userSender]}>{item.sender}</Text>
-          <Text style={[styles.senderRole, item.sender === fullName && styles.userSenderRole]}>{item.senderRole}</Text>
+          {/* Display only name for the logged-in user */}
+          <Text style={[styles.sender, item.sender === fullName && styles.userSender]}>
+            {item.sender === fullName ? fullName : item.sender}
+          </Text>
+          {/* Display role for non-logged-in users */}
+          {item.sender !== fullName && (
+            <Text style={[styles.senderRole, item.sender === fullName && styles.userSenderRole]}>
+              {item.senderRole}
+            </Text>
+          )}
         </View>
       </View>
       <Text style={[styles.messageText, item.sender === fullName && styles.userMessageText]}>{item.text}</Text>
