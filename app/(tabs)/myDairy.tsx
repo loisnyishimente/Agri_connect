@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { Platform, PermissionsAndroid } from 'react-native';
 
@@ -34,6 +34,7 @@ const MyDiaryScreen = () => {
   ]);
 
   const [newEntry, setNewEntry] = useState<string>('');
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const addNewEntry = () => {
     if (newEntry.trim() === '') {
@@ -74,6 +75,9 @@ const MyDiaryScreen = () => {
       return;
     }
 
+    // Show loading indicator
+    setIsDownloading(true);
+
     // Hardcoded Report Content (Generate the report of all entries)
     const reportContent = `Farm Diary Report\n\nTotal Entries: ${entries.length}\n\n` +
       entries
@@ -84,8 +88,18 @@ const MyDiaryScreen = () => {
 
     try {
       await FileSystem.writeAsStringAsync(fileUri, reportContent, { encoding: FileSystem.EncodingType.UTF8 });
-      Alert.alert('Success', `Diary report saved to: ${fileUri}`);
+
+      // Check if the file exists
+      const fileContent = await FileSystem.readAsStringAsync(fileUri);
+      if (fileContent) {
+        setIsDownloading(false);
+        Alert.alert('Success', `Diary report saved to: ${fileUri}`);
+      } else {
+        setIsDownloading(false);
+        Alert.alert('Error', 'Failed to save the file.');
+      }
     } catch (error) {
+      setIsDownloading(false);
       Alert.alert('Error', 'Failed to save the file.');
     }
   };
@@ -130,8 +144,10 @@ const MyDiaryScreen = () => {
       />
 
       <TouchableOpacity style={styles.downloadButton} onPress={generateAndDownloadFile}>
-        <Text style={styles.downloadButtonText}>Download  Report</Text>
+        <Text style={styles.downloadButtonText}>Download Report</Text>
       </TouchableOpacity>
+
+      {isDownloading && <ActivityIndicator size="large" color="#007BFF" style={styles.loadingIndicator} />}
     </View>
   );
 };
@@ -216,6 +232,9 @@ const styles = StyleSheet.create({
   downloadButtonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  loadingIndicator: {
+    marginTop: 20,
   },
 });
 
