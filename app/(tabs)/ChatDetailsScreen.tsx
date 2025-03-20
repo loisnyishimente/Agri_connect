@@ -7,6 +7,7 @@ interface Message {
   id: string;
   text: string;
   sender: 'me' | 'them';
+  status: 'sent' | 'delivered' | 'seen'; // Add message status
 }
 
 type RootStackParamList = {
@@ -17,17 +18,17 @@ type ChatDetailScreenRouteProp = RouteProp<RootStackParamList, 'chatDetailScreen
 
 const ChatDetailScreen: React.FC = () => {
   const route = useRoute<ChatDetailScreenRouteProp>();
-  const navigation = useNavigation(); // For navigation
+  const navigation = useNavigation();
   const { chatName } = route.params;
 
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', text: 'Hey! How are you?', sender: 'them' },
-    { id: '2', text: 'I’m good, what about you?', sender: 'me' },
+    { id: '1', text: 'Hey! How are you?', sender: 'them', status: 'sent' },
+    { id: '2', text: 'I’m good, what about you?', sender: 'me', status: 'delivered' },
   ]);
 
   const [newMessage, setNewMessage] = useState('');
-
-  const flatListRef = useRef<FlatList>(null); // Reference to FlatList for scrolling
+  const [typing, setTyping] = useState(false); // Typing indicator
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     // Scroll to the bottom when messages are updated
@@ -36,18 +37,12 @@ const ChatDetailScreen: React.FC = () => {
 
   const sendMessage = () => {
     if (newMessage.trim().length > 0) {
-      setMessages([
-        ...messages,
-        { id: Date.now().toString(), text: newMessage, sender: 'me' },
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { id: Date.now().toString(), text: newMessage, sender: 'me', status: 'sent' },
       ]);
       setNewMessage('');
-      
-      // Scroll up a small distance after a message is sent
-      setTimeout(() => {
-        if (flatListRef.current) {
-          flatListRef.current.scrollToOffset({ offset: 50, animated: true }); // Scroll up by 50px
-        }
-      }, 100); // Delay to make sure the list has updated first
+      setTyping(false); // Reset typing indicator
     }
   };
 
@@ -66,8 +61,18 @@ const ChatDetailScreen: React.FC = () => {
       >
         {item.text}
       </Text>
+      <Text style={styles.messageStatus}>
+        {item.status === 'sent' ? 'Sent' : item.status === 'delivered' ? 'Delivered' : 'Seen'}
+      </Text>
     </View>
   );
+
+  const handleInputChange = (text: string) => {
+    setNewMessage(text);
+    if (!typing) {
+      setTyping(true); // Show typing indicator
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -78,19 +83,24 @@ const ChatDetailScreen: React.FC = () => {
         <Text style={styles.header}>{chatName}</Text>
       </View>
       <FlatList
-        ref={flatListRef} // Set the FlatList reference
+        ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={renderMessage}
-        inverted={false} // Ensure the messages are ordered from top to bottom
-        style={styles.flatList} // Apply custom style to FlatList
+        style={styles.flatList}
       />
+      {typing && (
+        <View style={styles.typingIndicatorContainer}>
+          <Text style={styles.typingIndicatorText}>Typing...</Text>
+        </View>
+      )}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Type a message..."
           value={newMessage}
-          onChangeText={setNewMessage}
+          onChangeText={handleInputChange}
+          onFocus={() => setTyping(true)} // Start typing indicator when focused
         />
         <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
           <Ionicons name="send" size={24} color="white" />
@@ -108,7 +118,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#026338', // Green header
+    backgroundColor: '#026338',
     padding: 15,
   },
   backButton: {
@@ -119,7 +129,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    flex: 1, // Centers the header text
+    flex: 1,
   },
   messageBubble: {
     padding: 10,
@@ -129,11 +139,11 @@ const styles = StyleSheet.create({
   },
   myMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#026338', // Green for sent messages
+    backgroundColor: '#026338',
   },
   theirMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#DDD', // Grey for received messages
+    backgroundColor: '#DDD',
   },
   messageText: {
     color: 'white',
@@ -144,6 +154,19 @@ const styles = StyleSheet.create({
   theirMessageText: {
     color: 'black',
   },
+  messageStatus: {
+    fontSize: 10,
+    color: '#888',
+    marginTop: 5,
+  },
+  typingIndicatorContainer: {
+    paddingLeft: 15,
+    paddingBottom: 5,
+  },
+  typingIndicatorText: {
+    fontStyle: 'italic',
+    color: '#888',
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,7 +174,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#CCC',
     backgroundColor: '#FFF',
-    marginTop: 0, // Remove margin at the top to reduce space between input and messages
   },
   input: {
     flex: 1,
@@ -162,13 +184,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: '#026338', // Green button for sending messages
+    backgroundColor: '#026338',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
   },
   flatList: {
-    marginBottom: 10, // Reduce the bottom margin between the messages and the input
+    marginBottom: 10,
   },
 });
 

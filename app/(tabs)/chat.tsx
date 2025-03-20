@@ -10,11 +10,10 @@ import {
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
-
-import Avatar1 from "../../Images/profile.png"; 
-import Avatar2 from "../../Images/profile.png"; 
-import Avatar3 from "../../Images/profile.png"; 
-import Avatar4 from "../../Images/profile.png"; 
+import Avatar1 from "../../Images/profile.png";
+import Avatar2 from "../../Images/profile.png";
+import Avatar3 from "../../Images/profile.png";
+import Avatar4 from "../../Images/profile.png";
 
 interface Chat {
   id: string;
@@ -22,11 +21,12 @@ interface Chat {
   lastMessage: string;
   timestamp: string;
   unreadMessages: number;
-  avatar: any; 
+  avatar: any;
 }
 
 type RootStackParamList = {
   ChatDetailsScreen: { chatId: string; chatName: string };
+  NewChatScreen: undefined; // Add this line to define the navigation target
 };
 
 const ChatScreen: React.FC = () => {
@@ -53,7 +53,7 @@ const ChatScreen: React.FC = () => {
       lastMessage: "Let's plan the next webinar 🌱",
       timestamp: "Monday",
       unreadMessages: 1,
-      avatar: Avatar3, 
+      avatar: Avatar3,
     },
     {
       id: "4",
@@ -61,14 +61,14 @@ const ChatScreen: React.FC = () => {
       lastMessage: "Your order has been shipped 🚜",
       timestamp: "Sunday",
       unreadMessages: 0,
-      avatar: Avatar4, 
+      avatar: Avatar4,
     },
   ]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleOpenChat = (chat: Chat) => {
-    navigation.navigate("ChatDetailsScreen", {  
+    navigation.navigate("ChatDetailsScreen", {
       chatId: chat.id,
       chatName: chat.name,
     });
@@ -78,7 +78,11 @@ const ChatScreen: React.FC = () => {
       )
     );
   };
-  
+
+  const handleNewChat = () => {
+    // Navigate to New Chat screen
+    navigation.navigate("NewChatScreen");
+  };
 
   const renderChatItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity style={styles.chatItem} onPress={() => handleOpenChat(item)}>
@@ -104,7 +108,12 @@ const ChatScreen: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Chats</Text>
-        <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" />
+        <View style={styles.headerIcons}>
+          <TouchableOpacity onPress={handleNewChat}>
+            <Ionicons name="add-circle-outline" size={30} color="white" />
+          </TouchableOpacity>
+          <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" />
+        </View>
       </View>
       <FlatList
         data={chats}
@@ -131,6 +140,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#FFF",
     fontWeight: "bold",
+  },
+  headerIcons: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   chatItem: {
     flexDirection: "row",
