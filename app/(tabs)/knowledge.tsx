@@ -108,13 +108,13 @@ const KnowledgeScreen = () => {
       <Text style={styles.articleDescription}>{item.description}</Text>
       <Text style={styles.articleDate}>Published on: {item.date}</Text>
 
-      {/* Read Article Button */}
-      <TouchableOpacity 
-        style={styles.readArticleButton} 
+      {/* Read Article Link */}
+      <Text
+        style={styles.readArticleLink}
         onPress={() => handleReadArticle(item.pdfLink)}
       >
-        <Text style={styles.readArticleButtonText}>Read Article</Text>
-      </TouchableOpacity>
+        Read Article
+      </Text>
     </View>
   );
 
@@ -269,16 +269,11 @@ const styles = StyleSheet.create({
     color: '#aaa',
     marginTop: 10,
   },
-  readArticleButton: {
+  readArticleLink: {
     marginTop: 10,
-    padding: 10,
-    backgroundColor: '#026338',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  readArticleButtonText: {
-    color: '#fff',
+    color: '#1E90FF',
     fontSize: 14,
+    textDecorationLine: 'underline',
   },
   addArticleButton: {
     padding: 15,
