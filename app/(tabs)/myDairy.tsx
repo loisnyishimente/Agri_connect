@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
+import * as FileSystem from 'expo-file-system';
+import { Platform, PermissionsAndroid } from 'react-native';
 
 type DairyEntry = {
   id: string;
@@ -9,6 +11,7 @@ type DairyEntry = {
 };
 
 const MyDiaryScreen = () => {
+  // Hardcoded Diary Entries
   const [entries, setEntries] = useState<DairyEntry[]>([
     {
       id: '1',
@@ -16,8 +19,18 @@ const MyDiaryScreen = () => {
       description: 'Planted tomato seeds in the northern field. Expecting good harvest.',
       date: '2025-03-18',
     },
-  
-  
+    {
+      id: '2',
+      title: 'Watered Corn Field',
+      description: 'Watered the corn field in the southern section of the farm.',
+      date: '2025-03-19',
+    },
+    {
+      id: '3',
+      title: 'Harvested Carrots',
+      description: 'Harvested carrots from the east field. The yield is good.',
+      date: '2025-03-20',
+    },
   ]);
 
   const [newEntry, setNewEntry] = useState<string>('');
@@ -39,6 +52,44 @@ const MyDiaryScreen = () => {
     setNewEntry('');
   };
 
+  const requestStoragePermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission',
+          message: 'App needs access to your storage to save the diary file.',
+          buttonPositive: 'OK',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true;
+  };
+
+  const generateAndDownloadFile = async () => {
+    const permissionGranted = await requestStoragePermission();
+    if (!permissionGranted) {
+      Alert.alert('Permission Denied', 'Storage permission is required to save the file.');
+      return;
+    }
+
+    // Hardcoded Report Content (Generate the report of all entries)
+    const reportContent = `Farm Diary Report\n\nTotal Entries: ${entries.length}\n\n` +
+      entries
+        .map((entry) => `Title: ${entry.title}\nDate: ${entry.date}\nDescription: ${entry.description}\n\n`)
+        .join('');
+
+    const fileUri = FileSystem.documentDirectory + 'FarmDiaryReport.txt';
+
+    try {
+      await FileSystem.writeAsStringAsync(fileUri, reportContent, { encoding: FileSystem.EncodingType.UTF8 });
+      Alert.alert('Success', `Diary report saved to: ${fileUri}`);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save the file.');
+    }
+  };
+
   const renderEntryItem = ({ item }: { item: DairyEntry }) => (
     <View style={styles.entryItem}>
       <Text style={styles.entryTitle}>{item.title}</Text>
@@ -48,7 +99,6 @@ const MyDiaryScreen = () => {
       <TouchableOpacity
         style={styles.viewDetailsButton}
         onPress={() => {
-         
           alert(`Viewing details of entry: ${item.title}`);
         }}
       >
@@ -59,9 +109,8 @@ const MyDiaryScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Dairy</Text>
+      <Text style={styles.title}>My Diary</Text>
 
-  
       <TextInput
         value={newEntry}
         onChangeText={setNewEntry}
@@ -73,13 +122,16 @@ const MyDiaryScreen = () => {
         <Text style={styles.addButtonText}>Add Entry</Text>
       </TouchableOpacity>
 
-      
       <FlatList
         data={entries}
         renderItem={renderEntryItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.entriesList}
       />
+
+      <TouchableOpacity style={styles.downloadButton} onPress={generateAndDownloadFile}>
+        <Text style={styles.downloadButtonText}>Download  Report</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -153,6 +205,17 @@ const styles = StyleSheet.create({
   viewDetailsButtonText: {
     color: '#fff',
     fontSize: 14,
+  },
+  downloadButton: {
+    backgroundColor: '#007BFF',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  downloadButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

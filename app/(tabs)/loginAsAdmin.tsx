@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -14,10 +15,20 @@ const AdminLogin = () => {
   type NavigationProps = NativeStackNavigationProp<StackParamList, "Main">;
   const navigation = useNavigation<NavigationProps>();
 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleAdminSignIn = () => {
-  
-    console.log("Admin Sign-In");
-    navigation.navigate("Main");
+    const hardcodedUsername = "admin";
+    const hardcodedPassword = "password123";
+
+    if (username === hardcodedUsername && password === hardcodedPassword) {
+      console.log("Admin Sign-In Successful");
+      navigation.navigate("Main");
+    } else {
+      console.log("Invalid Credentials");
+      alert("Invalid username or password!");
+    }
   };
 
   return (
@@ -37,18 +48,22 @@ const AdminLogin = () => {
             left={<TextInput.Icon icon="account" />}
             label="Admin Username"
             style={styles.input}
+            value={username}
+            onChangeText={setUsername}
           />
           <CustomInput
             left={<TextInput.Icon icon="lock" />}
             label="Password"
             secureTextEntry
             style={styles.input}
+            value={password}
+            onChangeText={setPassword}
           />
         </View>
         <CustomButton
           buttonText="Sign In as Admin"
           style={styles.signInButton}
-          onPress={handleAdminSignIn} 
+          onPress={handleAdminSignIn}
         />
         <Text style={styles.forgotPassword}>Forgot password?</Text>
         <View style={styles.registerContainer}>
