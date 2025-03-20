@@ -25,17 +25,14 @@ const ChatDetailScreen: React.FC = () => {
     { id: '1', text: 'Hey! How are you?', sender: 'them', status: 'sent' },
     { id: '2', text: 'I’m good, what about you?', sender: 'me', status: 'sent' },
     { id: '3', text: 'Im also doing grt', sender: 'them', status: 'delivered' },
-    { id: '4', text: 'I have question', sender: 'me', status: 'sent' },
-    { id: '5', text: 'which Question', sender: 'them', status: 'delivered' },
-   
   ]);
 
   const [newMessage, setNewMessage] = useState('');
-  const [typing, setTyping] = useState(false); // Typing indicator
+  const [typing, setTyping] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    // Scroll to the bottom when messages are updated
+  
     flatListRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 

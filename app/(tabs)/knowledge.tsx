@@ -19,7 +19,7 @@ const KnowledgeScreen = () => {
       description: 'Learn the best practices to keep your soil healthy and productive.',
       category: 'Soil Health',
       date: '2025-03-01',
-      pdfLink: 'https://example.com/soil-health.pdf', // Example PDF link
+      pdfLink: 'https://www.soilhealth.org/soil-health-practices-guide.pdf', // Replace with real link
     },
     {
       id: '2',
@@ -27,7 +27,15 @@ const KnowledgeScreen = () => {
       description: 'Explore the most effective ways to manage pests in your crops.',
       category: 'Pest Control',
       date: '2025-03-05',
-      pdfLink: 'https://example.com/pest-control.pdf', // Example PDF link
+      pdfLink: 'https://www.pestcontrol.org/tips-for-effective-pest-management.pdf', // Replace with real link
+    },
+    {
+      id: '3',
+      title: 'Irrigation Techniques for Better Yields',
+      description: 'Understand the irrigation systems that can improve crop yields.',
+      category: 'Irrigation',
+      date: '2025-02-20',
+      pdfLink: 'https://www.irrigation.org/better-irrigation-techniques.pdf', // Replace with real link
     },
   ]);
 
@@ -56,7 +64,7 @@ const KnowledgeScreen = () => {
           description: 'Learn the best practices to keep your soil healthy and productive.',
           category: 'Soil Health',
           date: '2025-03-01',
-          pdfLink: 'https://example.com/soil-health.pdf',
+          pdfLink: 'https://www.soilhealth.org/soil-health-practices-guide.pdf',
         },
         {
           id: '2',
@@ -64,7 +72,7 @@ const KnowledgeScreen = () => {
           description: 'Explore the most effective ways to manage pests in your crops.',
           category: 'Pest Control',
           date: '2025-03-05',
-          pdfLink: 'https://example.com/pest-control.pdf',
+          pdfLink: 'https://www.pestcontrol.org/tips-for-effective-pest-management.pdf',
         },
         {
           id: '3',
@@ -72,7 +80,7 @@ const KnowledgeScreen = () => {
           description: 'Understand the irrigation systems that can improve crop yields.',
           category: 'Irrigation',
           date: '2025-02-20',
-          pdfLink: 'https://example.com/irrigation-techniques.pdf', // Example PDF link
+          pdfLink: 'https://www.irrigation.org/better-irrigation-techniques.pdf',
         },
       ]);
     }
