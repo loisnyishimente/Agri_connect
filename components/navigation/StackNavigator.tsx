@@ -15,6 +15,7 @@ export type StackParamList = {
   discussionChat:undefined;
   ChatDetailsScreen: { chatId: string; chatName: string }; 
   loginAsAdmin:undefined;
+  NewChatScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParamList>();

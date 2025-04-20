@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// ChatScreen.tsx
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,14 +7,14 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-} from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
-import Avatar1 from "../../Images/profile.png";
-import Avatar2 from "../../Images/profile.png";
-import Avatar3 from "../../Images/profile.png";
-import Avatar4 from "../../Images/profile.png";
+import Avatar1 from '../../Images/profile.png';
+import Avatar2 from '../../Images/profile.png';
+import Avatar3 from '../../Images/profile.png';
+import Avatar4 from '../../Images/profile.png';
 
 interface Chat {
   id: string;
@@ -26,40 +27,40 @@ interface Chat {
 
 type RootStackParamList = {
   ChatDetailsScreen: { chatId: string; chatName: string };
-  NewChatScreen: undefined; // Add this line to define the navigation target
+  NewChatScreen: undefined;
 };
 
 const ChatScreen: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([
     {
-      id: "1",
-      name: " John",
-      lastMessage: "Crop prices are rising 📈",
-      timestamp: "10:30 AM",
+      id: '1',
+      name: 'John',
+      lastMessage: 'Crop prices are rising 📈',
+      timestamp: '10:30 AM',
       unreadMessages: 2,
       avatar: Avatar1,
     },
     {
-      id: "2",
-      name: "Alice",
-      lastMessage: "New fertilizer available now!",
-      timestamp: "Yesterday",
+      id: '2',
+      name: 'Alice',
+      lastMessage: 'New fertilizer available now!',
+      timestamp: 'Yesterday',
       unreadMessages: 0,
       avatar: Avatar2,
     },
     {
-      id: "3",
-      name: "Webinar Group",
-      lastMessage: "Let's plan the next webinar 🌱",
-      timestamp: "Monday",
+      id: '3',
+      name: 'Webinar Group',
+      lastMessage: 'Let\'s plan the next webinar 🌱',
+      timestamp: 'Monday',
       unreadMessages: 1,
       avatar: Avatar3,
     },
     {
-      id: "4",
-      name: "Pesticide Suppliers",
-      lastMessage: "Your order has been shipped 🚜",
-      timestamp: "Sunday",
+      id: '4',
+      name: 'Pesticide Suppliers',
+      lastMessage: 'Your order has been shipped 🚜',
+      timestamp: 'Sunday',
       unreadMessages: 0,
       avatar: Avatar4,
     },
@@ -68,7 +69,7 @@ const ChatScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleOpenChat = (chat: Chat) => {
-    navigation.navigate("ChatDetailsScreen", {
+    navigation.navigate('ChatDetailsScreen', {
       chatId: chat.id,
       chatName: chat.name,
     });
@@ -80,8 +81,7 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleNewChat = () => {
-    // Navigate to New Chat screen
-    navigation.navigate("NewChatScreen");
+    navigation.navigate('NewChatScreen');
   };
 
   const renderChatItem = ({ item }: { item: Chat }) => (
@@ -127,31 +127,31 @@ const ChatScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: '#F5F5F5',
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 15,
-    backgroundColor: "#2E7D32",
+    backgroundColor: '#2E7D32',
   },
   headerTitle: {
     fontSize: 20,
-    color: "#FFF",
-    fontWeight: "bold",
+    color: '#FFF',
+    fontWeight: 'bold',
   },
   headerIcons: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   chatItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 15,
     borderBottomWidth: 1,
-    borderColor: "#DDD",
-    backgroundColor: "#FFF",
+    borderColor: '#DDD',
+    backgroundColor: '#FFF',
   },
   avatar: {
     width: 50,
@@ -160,38 +160,38 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   chatInfo: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
   },
   chatName: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   lastMessage: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
     marginTop: 2,
   },
   rightSection: {
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
   },
   timestamp: {
     fontSize: 12,
-    color: "#999",
+    color: '#999',
   },
   unreadBadge: {
-    backgroundColor: "#2E7D32",
+    backgroundColor: '#2E7D32',
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
     marginTop: 5,
   },
   unreadText: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 12,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 
