@@ -1,5 +1,10 @@
-import { Pressable, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
+import {
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomInput from "@/components/form/customInput";
@@ -8,12 +13,10 @@ import { View } from "@/components/View";
 import { Text } from "@/components/Text";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { StackParamList } from "../../components/navigation/StackNavigator"; // Make sure this path is correct
-
+import { StackParamList } from "../../components/navigation/StackNavigator";
 
 const Login = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,6 +42,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error during login:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
     }
   };
 
@@ -48,16 +52,16 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}></View>
+      <View style={styles.header} />
       <View style={styles.mainContent}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Agri</Text>
           <Text style={[styles.title, styles.highlightedText]}>Connect</Text>
         </View>
-        <View>
-          <Text style={styles.welcomeText}>Welcome...</Text>
-          <Text style={styles.signInText}>Sign In to continue</Text>
-        </View>
+
+        <Text style={styles.welcomeText}>Welcome...</Text>
+        <Text style={styles.signInText}>Sign In to continue</Text>
+
         <View style={styles.formContainer}>
           <CustomInput
             left={<TextInput.Icon icon="mail" />}
@@ -75,30 +79,31 @@ const Login = () => {
             style={styles.input}
           />
         </View>
+
         <CustomButton
           buttonText="Sign In"
           style={styles.signInButton}
           onPress={handleSignIn}
         />
+
         <View style={styles.orContainer}>
-          <View style={styles.separator}></View>
+          <View style={styles.separator} />
           <Text>OR</Text>
-          <View style={styles.separator}></View>
+          <View style={styles.separator} />
         </View>
-        <TouchableOpacity
-          style={styles.socialButton}
-          onPress={handleAdminLogin}
-        >
+
+        <TouchableOpacity style={styles.socialButton} onPress={handleAdminLogin}>
           <View style={styles.socialButtonContent}>
             <Text style={styles.socialText}>Login as Admin</Text>
           </View>
         </TouchableOpacity>
 
         <Text style={styles.forgotPassword}>Forgot password?</Text>
+
         <View style={styles.registerContainer}>
           <Text>Don't have an account?</Text>
           <Pressable onPress={() => navigation.navigate("SignUp")}>
-            <Text style={styles.registerText}>Register</Text>
+            <Text style={styles.registerText}> Register</Text>
           </Pressable>
         </View>
       </View>
@@ -107,8 +112,6 @@ const Login = () => {
 };
 
 export default Login;
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -209,3 +212,4 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
