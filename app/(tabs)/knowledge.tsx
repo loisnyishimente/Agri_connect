@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity, ScrollView, Modal, Button, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View, Text, FlatList, TextInput, StyleSheet,
+  TouchableOpacity, ScrollView, Modal, Button, Linking
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type KnowledgeArticle = {
   id: string;
@@ -7,12 +11,13 @@ type KnowledgeArticle = {
   description: string;
   category: string;
   date: string;
-  pdfLink: string; // New field for the PDF link
+  pdfLink: string;
 };
 
+const STORAGE_KEY = 'knowledge_articles';
+
 const KnowledgeScreen = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [articles, setArticles] = useState<KnowledgeArticle[]>([
+  const defaultArticles: KnowledgeArticle[] = [
     {
       id: '1',
       title: 'Best Practices for Soil Health',
@@ -27,7 +32,7 @@ const KnowledgeScreen = () => {
       description: 'Explore the most effective ways to manage pests in your crops.',
       category: 'Pest Control',
       date: '2025-03-05',
-      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf', 
+      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
     },
     {
       id: '3',
@@ -35,11 +40,12 @@ const KnowledgeScreen = () => {
       description: 'Understand the irrigation systems that can improve crop yields.',
       category: 'Irrigation',
       date: '2025-02-20',
-      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf', // Example link
+      pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
     },
-  ]);
-  
+  ];
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newArticle, setNewArticle] = useState<KnowledgeArticle>({
     id: '',
@@ -47,63 +53,54 @@ const KnowledgeScreen = () => {
     description: '',
     category: '',
     date: '',
-    pdfLink: '', // New field for PDF link
+    pdfLink: '',
   });
+
+  useEffect(() => {
+    loadArticles();
+  }, []);
+
+  const loadArticles = async () => {
+    try {
+      const storedArticles = await AsyncStorage.getItem(STORAGE_KEY);
+      if (storedArticles) {
+        setArticles(JSON.parse(storedArticles));
+      } else {
+        setArticles(defaultArticles);
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(defaultArticles));
+      }
+    } catch (error) {
+      console.error('Failed to load articles', error);
+    }
+  };
+
+  const saveArticles = async (updatedArticles: KnowledgeArticle[]) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedArticles));
+    } catch (error) {
+      console.error('Failed to save articles', error);
+    }
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
-      const filteredArticles = articles.filter((article) =>
+      const filtered = articles.filter(article =>
         article.title.toLowerCase().includes(query.toLowerCase())
       );
-      setArticles(filteredArticles);
+      setArticles(filtered);
     } else {
-      setArticles([
-        {
-          id: '1',
-          title: 'Best Practices for Soil Health',
-          description: 'Learn the best practices to keep your soil healthy and productive.',
-          category: 'Soil Health',
-          date: '2025-03-01',
-          pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
-        },
-        {
-          id: '2',
-          title: 'Top Tips for Pest Control',
-          description: 'Explore the most effective ways to manage pests in your crops.',
-          category: 'Pest Control',
-          date: '2025-03-05',
-          pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
-        },
-        {
-          id: '3',
-          title: 'Irrigation Techniques for Better Yields',
-          description: 'Understand the irrigation systems that can improve crop yields.',
-          category: 'Irrigation',
-          date: '2025-02-20',
-          pdfLink: 'https://www.manage.gov.in/publications/farmerbook.pdf',
-        },
-      ]);
+      loadArticles();
     }
   };
 
   const handleAddArticle = () => {
-    setArticles([
-      ...articles,
-      {
-        ...newArticle,
-        id: (articles.length + 1).toString(), // Generate a new ID
-      },
-    ]);
+    const newId = (articles.length + 1).toString();
+    const updatedArticles = [...articles, { ...newArticle, id: newId }];
+    setArticles(updatedArticles);
+    saveArticles(updatedArticles);
     setModalVisible(false);
-    setNewArticle({
-      id: '',
-      title: '',
-      description: '',
-      category: '',
-      date: '',
-      pdfLink: '', // Reset PDF link
-    });
+    setNewArticle({ id: '', title: '', description: '', category: '', date: '', pdfLink: '' });
   };
 
   const handleReadArticle = (pdfLink: string) => {
@@ -116,12 +113,7 @@ const KnowledgeScreen = () => {
       <Text style={styles.articleCategory}>Category: {item.category}</Text>
       <Text style={styles.articleDescription}>{item.description}</Text>
       <Text style={styles.articleDate}>Published on: {item.date}</Text>
-
-      {/* Read Article Link */}
-      <Text
-        style={styles.readArticleLink}
-        onPress={() => handleReadArticle(item.pdfLink)}
-      >
+      <Text style={styles.readArticleLink} onPress={() => handleReadArticle(item.pdfLink)}>
         Read Article
       </Text>
     </View>
@@ -136,7 +128,7 @@ const KnowledgeScreen = () => {
         value={searchQuery}
         onChangeText={handleSearch}
       />
-      
+
       <View style={styles.categoryContainer}>
         <TouchableOpacity style={styles.categoryButton} onPress={() => handleSearch('Soil Health')}>
           <Text style={styles.categoryButtonText}>Soil Health</Text>
@@ -160,46 +152,22 @@ const KnowledgeScreen = () => {
         <Text style={styles.addArticleButtonText}>Add New Article</Text>
       </TouchableOpacity>
 
-      {/* Modal to add a new article */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      {/* Modal */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add New Article</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Title"
-              value={newArticle.title}
-              onChangeText={(text) => setNewArticle({ ...newArticle, title: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Description"
-              value={newArticle.description}
-              onChangeText={(text) => setNewArticle({ ...newArticle, description: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Category"
-              value={newArticle.category}
-              onChangeText={(text) => setNewArticle({ ...newArticle, category: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Date (YYYY-MM-DD)"
-              value={newArticle.date}
-              onChangeText={(text) => setNewArticle({ ...newArticle, date: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="PDF Link"
-              value={newArticle.pdfLink}
-              onChangeText={(text) => setNewArticle({ ...newArticle, pdfLink: text })}
-            />
+            {['title', 'description', 'category', 'date', 'pdfLink'].map((field) => (
+              <TextInput
+                key={field}
+                style={styles.input}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                value={newArticle[field as keyof KnowledgeArticle]}
+                onChangeText={(text) =>
+                  setNewArticle({ ...newArticle, [field]: text })
+                }
+              />
+            ))}
             <View style={styles.modalButtons}>
               <Button title="Cancel" onPress={() => setModalVisible(false)} />
               <Button title="Add Article" onPress={handleAddArticle} />
@@ -212,119 +180,54 @@ const KnowledgeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
+  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
   searchInput: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingLeft: 10,
-    marginBottom: 20,
+    height: 40, borderColor: '#ddd', borderWidth: 1, borderRadius: 8,
+    paddingLeft: 10, marginBottom: 20,
   },
   categoryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+    flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20,
   },
   categoryButton: {
-    padding: 10,
-    backgroundColor: '#026338',
-    borderRadius: 8,
+    padding: 10, backgroundColor: '#026338', borderRadius: 8,
   },
-  categoryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-  },
-  articleList: {
-    marginBottom: 20,
-  },
+  categoryButtonText: { color: '#fff', fontSize: 14 },
+  articleList: { marginBottom: 20 },
   articleItem: {
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    marginBottom: 15,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: '#f9f9f9', padding: 15, marginBottom: 15, borderRadius: 8,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1, shadowRadius: 4, elevation: 3,
   },
-  articleTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  articleCategory: {
-    fontSize: 14,
-    color: '#026338',
-    marginTop: 5,
-  },
-  articleDescription: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 5,
-  },
-  articleDate: {
-    fontSize: 12,
-    color: '#aaa',
-    marginTop: 10,
-  },
+  articleTitle: { fontSize: 18, fontWeight: 'bold' },
+  articleCategory: { fontSize: 14, color: '#026338', marginTop: 5 },
+  articleDescription: { fontSize: 14, color: '#555', marginTop: 5 },
+  articleDate: { fontSize: 12, color: '#aaa', marginTop: 10 },
   readArticleLink: {
-    marginTop: 10,
-    color: '#1E90FF',
-    fontSize: 14,
+    marginTop: 10, color: '#1E90FF', fontSize: 14,
     textDecorationLine: 'underline',
   },
   addArticleButton: {
-    padding: 15,
-    backgroundColor: '#026338',
-    borderRadius: 8,
-    marginTop: 20,
-    alignItems: 'center',
+    padding: 15, backgroundColor: '#026338',
+    borderRadius: 8, marginTop: 20, alignItems: 'center',
   },
-  addArticleButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
+  addArticleButtonText: { color: '#fff', fontSize: 16 },
   modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1, justifyContent: 'center', alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    width: '80%',
-    borderRadius: 10,
-    alignItems: 'center',
+    backgroundColor: '#fff', padding: 20, width: '80%',
+    borderRadius: 10, alignItems: 'center',
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20 },
   input: {
-    height: 40,
-    width: '100%',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingLeft: 10,
+    height: 40, width: '100%', borderColor: '#ddd',
+    borderWidth: 1, borderRadius: 8, paddingLeft: 10,
     marginBottom: 10,
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: 'row', justifyContent: 'space-around',
     width: '100%',
   },
 });

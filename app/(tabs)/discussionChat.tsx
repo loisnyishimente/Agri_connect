@@ -62,12 +62,15 @@ export default function Chat() {
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
     setInputText('');
-
     await AsyncStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
   };
 
   const handleGoBack = () => {
     router.back();
+  };
+
+  const handleLogout = () => {
+    router.replace('/Login'); // Just navigates to login screen
   };
 
   const renderMessage = ({ item }: { item: Message }) => {
@@ -101,6 +104,9 @@ export default function Chat() {
           <ArrowLeft color="#4B5563" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Chat</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Messages */}
@@ -148,6 +154,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1F2937',
   },
+  logoutButton: {
+    marginLeft: 'auto',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: '#EF4444',
+    borderRadius: 8,
+  },
+  logoutText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
   messageList: {
     flexGrow: 1,
   },
@@ -168,7 +185,7 @@ const styles = StyleSheet.create({
     maxWidth: '80%',
   },
   ownMessage: {
-    backgroundColor: '#026338/',
+    backgroundColor: '#026338',
   },
   receivedMessage: {
     backgroundColor: '#FFFFFF',
