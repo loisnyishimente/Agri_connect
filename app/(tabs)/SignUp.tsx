@@ -1,23 +1,35 @@
-import { Image, Pressable, StyleSheet, Alert, ActivityIndicator } from "react-native";
+// screens/SignUp.tsx
+
 import React, { useState } from "react";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { TextInput } from "react-native-paper";
-import CustomInput from "@/components/form/customInput";
-import CustomButton from "@/components/form/customButton";
-import { TouchableOpacity } from "react-native";
-import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View } from "@/components/View";
 import { Text } from "@/components/Text";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomInput from "@/components/form/customInput";
+import CustomButton from "@/components/form/customButton";
+import { StackParamList } from "@/components/navigation/StackNavigator";
 
-const Signup = () => {
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [region, setRegion] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+const SignUp = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  const handleSignup = async () => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [region, setRegion] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
     if (!fullName || !email || !password || !confirmPassword || !region) {
       Alert.alert("Error", "Please fill all the fields.");
       return;
@@ -31,7 +43,6 @@ const Signup = () => {
     setLoading(true);
 
     try {
-    
       const user = {
         fullName,
         email,
@@ -40,14 +51,15 @@ const Signup = () => {
         region,
       };
 
-    
       await AsyncStorage.setItem("user", JSON.stringify(user));
 
-     
-      Alert.alert("Success", "Signup successful!");
-      router.push("/Login");
+      Alert.alert("Success", "Registration complete!");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     } catch (error) {
-      Alert.alert("Error", "An error occurred during signup. Please try again.");
+      Alert.alert("Error", "An error occurred during signup.");
     } finally {
       setLoading(false);
     }
@@ -55,7 +67,7 @@ const Signup = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}></View>
+      <View style={styles.header} />
       <View style={styles.formContainer}>
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>Agri</Text>
@@ -72,7 +84,7 @@ const Signup = () => {
             onChangeText={setFullName}
           />
           <CustomInput
-            left={<TextInput.Icon icon="mail" />}
+            left={<TextInput.Icon icon="email" />}
             label="Email"
             value={email}
             onChangeText={setEmail}
@@ -80,15 +92,15 @@ const Signup = () => {
           <CustomInput
             left={<TextInput.Icon icon="lock" />}
             label="Password"
-            secureTextEntry
             value={password}
+            secureTextEntry
             onChangeText={setPassword}
           />
           <CustomInput
             left={<TextInput.Icon icon="lock" />}
             label="Confirm Password"
-            secureTextEntry
             value={confirmPassword}
+            secureTextEntry
             onChangeText={setConfirmPassword}
           />
           <CustomInput
@@ -100,15 +112,14 @@ const Signup = () => {
         </View>
 
         <View style={styles.buttonContainer}>
-          <CustomButton buttonText="Sign Up" onPress={handleSignup} />
+          <CustomButton buttonText="Sign Up" onPress={handleSignUp} />
+          {loading && <ActivityIndicator size="large" color="#026338" />}
         </View>
 
-        {loading && <ActivityIndicator size="large" color="#026338" />}
-
         <View style={styles.orContainer}>
-          <View style={styles.divider}></View>
+          <View style={styles.divider} />
           <Text>OR</Text>
-          <View style={styles.divider}></View>
+          <View style={styles.divider} />
         </View>
 
         <View style={styles.socialLoginContainer}>
@@ -135,7 +146,7 @@ const Signup = () => {
 
         <View style={styles.loginPromptContainer}>
           <Text>Already have an account?</Text>
-          <Pressable onPress={() => router.push("/Login")}>
+          <Pressable onPress={() => navigation.navigate("Login")}>
             <Text style={styles.loginText}>Login</Text>
           </Pressable>
         </View>
@@ -144,50 +155,44 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignUp;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-  },
-  header: {
-    height: 160,
-    backgroundColor: '#026338',
-  },
+  container: { flex: 1, width: "100%" },
+  header: { height: 160, backgroundColor: "#026338" },
   formContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 160,
     left: 0,
     right: 0,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
   },
   logoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     paddingVertical: 16,
   },
   logoText: {
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   logoHighlight: {
-    color: '#026338',
+    color: "#026338",
   },
   welcomeText: {
     fontSize: 18,
-    color: '#0e244e9e',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#0e244e9e",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   subText: {
     fontSize: 14,
-    color: '#626262',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#626262",
+    fontWeight: "bold",
+    textAlign: "center",
     paddingVertical: 8,
   },
   formFields: {
@@ -197,15 +202,15 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   orContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
   },
   divider: {
     height: 1,
-    width: '40%',
-    backgroundColor: '#E6E8EE',
+    width: "40%",
+    backgroundColor: "#E6E8EE",
   },
   socialLoginContainer: {
     paddingVertical: 16,
@@ -214,14 +219,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#E6E8EE',
+    borderColor: "#E6E8EE",
     borderRadius: 8,
     marginBottom: 12,
   },
   socialButtonContent: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   socialIcon: {
     height: 20,
@@ -229,17 +234,18 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   socialButtonText: {
-    color: '#026338',
+    color: "#026338",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   loginPromptContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     paddingVertical: 12,
   },
   loginText: {
-    color: '#026338',
-    fontWeight: '600',
+    color: "#026338",
+    fontWeight: "600",
+    marginLeft: 4,
   },
 });
