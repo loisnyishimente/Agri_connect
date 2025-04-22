@@ -4,7 +4,6 @@ import {
   TouchableOpacity, ScrollView, Modal, Button, Linking
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';  // Import date picker
 
 type KnowledgeArticle = {
   id: string;
@@ -56,8 +55,6 @@ const KnowledgeScreen = () => {
     date: '',
     pdfLink: '',
   });
-  
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   useEffect(() => {
     loadArticles();
@@ -110,11 +107,6 @@ const KnowledgeScreen = () => {
     Linking.openURL(pdfLink).catch((err) => console.error('Failed to open PDF link', err));
   };
 
-  const handleDatePickerConfirm = (date: Date) => {
-    setNewArticle({ ...newArticle, date: date.toISOString().split('T')[0] }); // Format the date as yyyy-mm-dd
-    setDatePickerVisibility(false);
-  };
-
   const renderArticleItem = ({ item }: { item: KnowledgeArticle }) => (
     <View style={styles.articleItem}>
       <Text style={styles.articleTitle}>{item.title}</Text>
@@ -165,7 +157,7 @@ const KnowledgeScreen = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add New Article</Text>
-            {['title', 'description', 'category', 'pdfLink'].map((field) => (
+            {['title', 'description', 'category', 'date', 'pdfLink'].map((field) => (
               <TextInput
                 key={field}
                 style={styles.input}
@@ -176,24 +168,6 @@ const KnowledgeScreen = () => {
                 }
               />
             ))}
-
-            {/* Date Picker Button */}
-            <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
-            <TextInput
-  style={[styles.input, { paddingRight: 170 }]}  // Adjust padding for visual consistency
-  editable={false}
-  placeholder="Select Date"
-  value={newArticle.date}
-/>
-
-            </TouchableOpacity>
-  {/* Date Picker */}
-  <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleDatePickerConfirm}
-        onCancel={() => setDatePickerVisibility(false)}
-      />
             <View style={styles.modalButtons}>
               <Button title="Cancel" onPress={() => setModalVisible(false)} />
               <Button title="Add Article" onPress={handleAddArticle} />
@@ -201,8 +175,6 @@ const KnowledgeScreen = () => {
           </View>
         </View>
       </Modal>
-
-    
     </ScrollView>
   );
 };
@@ -249,17 +221,11 @@ const styles = StyleSheet.create({
     borderRadius: 10, alignItems: 'center',
   },
   modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20 },
-
-    input: {
-      height: 40, 
-      width: '100%',  // This will make the input field take up the full width of the container
-      maxWidth: 350,  // You can set a maximum width if you don't want it to stretch too wide
-      borderColor: '#ddd',
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingLeft: 10,
-      marginBottom: 10,
-    },
+  input: {
+    height: 40, width: '100%', borderColor: '#ddd',
+    borderWidth: 1, borderRadius: 8, paddingLeft: 10,
+    marginBottom: 10,
+  },
   modalButtons: {
     flexDirection: 'row', justifyContent: 'space-around',
     width: '100%',
