@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, Text, FlatList, TextInput, Button, 
-  StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform 
+import {
+  View, Text, FlatList, TextInput, Button,
+  StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -85,6 +85,15 @@ const DiscussionScreen = ({ navigation }: any) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      navigation.replace('Login'); // Replace with your login screen name
+    } catch (error) {
+      console.error('Error during logout', error);
+    }
+  };
+
   const renderDiscussionItem = ({ item }: { item: Discussion }) => (
     <TouchableOpacity onPress={() => navigation.navigate('discussionChat', { discussionId: item.id })}>
       <View style={styles.discussionItem}>
@@ -101,7 +110,12 @@ const DiscussionScreen = ({ navigation }: any) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Text style={styles.title}>Agricultural Discussion Forum</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Agricultural Discussion Forum</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={discussions}
@@ -135,12 +149,27 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    marginBottom: 10,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#026338',
-    marginBottom: 10,
-    textAlign: 'center',
+  },
+  logoutButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#f44336',
+    borderRadius: 6,
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   list: {
     marginBottom: 20,
@@ -193,7 +222,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textArea: {
-    height: 60, 
+    height: 60,
     textAlignVertical: 'top',
   },
 });
