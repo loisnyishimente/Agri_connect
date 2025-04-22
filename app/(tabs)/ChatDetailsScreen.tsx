@@ -7,14 +7,14 @@ interface Message {
   id: string;
   text: string;
   sender: 'me' | 'them';
-  status: 'sent' | 'delivered' | 'seen'; // Add message status
+  status: 'sent' | 'delivered' | 'seen';
 }
 
 type RootStackParamList = {
-  chatDetailScreen: { chatId: string; chatName: string };
+  ChatDetailsScreen: { chatId: string; chatName: string };
 };
 
-type ChatDetailScreenRouteProp = RouteProp<RootStackParamList, 'chatDetailScreen'>;
+type ChatDetailScreenRouteProp = RouteProp<RootStackParamList, 'ChatDetailsScreen'>;
 
 const ChatDetailScreen: React.FC = () => {
   const route = useRoute<ChatDetailScreenRouteProp>();
@@ -24,7 +24,7 @@ const ChatDetailScreen: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', text: 'Hey! How are you?', sender: 'them', status: 'sent' },
     { id: '2', text: 'I’m good, what about you?', sender: 'me', status: 'sent' },
-    { id: '3', text: 'Im also doing grt', sender: 'them', status: 'delivered' },
+    { id: '3', text: 'I’m also doing great', sender: 'them', status: 'delivered' },
   ]);
 
   const [newMessage, setNewMessage] = useState('');
@@ -32,7 +32,6 @@ const ChatDetailScreen: React.FC = () => {
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-  
     flatListRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
@@ -40,11 +39,21 @@ const ChatDetailScreen: React.FC = () => {
     if (newMessage.trim().length > 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { id: Date.now().toString(), text: newMessage, sender: 'me', status: 'sent' },
+        {
+          id: Date.now().toString(),
+          text: newMessage,
+          sender: 'me',
+          status: 'sent',
+        },
       ]);
       setNewMessage('');
-      setTyping(false); // Reset typing indicator
+      setTyping(false);
     }
+  };
+
+  const handleInputChange = (text: string) => {
+    setNewMessage(text);
+    if (!typing) setTyping(true);
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
@@ -67,13 +76,6 @@ const ChatDetailScreen: React.FC = () => {
       </Text>
     </View>
   );
-
-  const handleInputChange = (text: string) => {
-    setNewMessage(text);
-    if (!typing) {
-      setTyping(true); // Show typing indicator
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -101,7 +103,7 @@ const ChatDetailScreen: React.FC = () => {
           placeholder="Type a message..."
           value={newMessage}
           onChangeText={handleInputChange}
-          onFocus={() => setTyping(true)} // Start typing indicator when focused
+          onFocus={() => setTyping(true)}
         />
         <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
           <Ionicons name="send" size={24} color="white" />
@@ -112,19 +114,14 @@ const ChatDetailScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#026338',
     padding: 15,
   },
-  backButton: {
-    marginRight: 10,
-  },
+  backButton: { marginRight: 10 },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -146,15 +143,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: '#DDD',
   },
-  messageText: {
-    color: 'white',
-  },
-  myMessageText: {
-    color: 'white',
-  },
-  theirMessageText: {
-    color: 'black',
-  },
+  messageText: {},
+  myMessageText: { color: 'white' },
+  theirMessageText: { color: 'black' },
   messageStatus: {
     fontSize: 10,
     color: '#888',

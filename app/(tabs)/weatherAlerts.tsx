@@ -1,5 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, Modal, TextInput, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Modal,
+  TextInput,
+  Button,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type WeatherAlert = {
   id: string;
@@ -8,23 +19,11 @@ type WeatherAlert = {
   severity: string;
   date: string;
   location: string;
-  category: string; 
+  category: string;
 };
 
 const WeatherAlertsScreen = () => {
-  const [alerts, setAlerts] = useState<WeatherAlert[]>([
-    {
-      id: '1',
-      title: 'Storm Warning - Tropical Storm',
-      description: 'A tropical storm is approaching, with heavy rains and winds expected.',
-      severity: 'High',
-      date: '2025-03-18',
-      location: 'Northern Region',
-      category: 'Storm',
-    },
-   
-  ]);
-
+  const [alerts, setAlerts] = useState<WeatherAlert[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [newAlert, setNewAlert] = useState<WeatherAlert>({
     id: '',
@@ -36,9 +35,34 @@ const WeatherAlertsScreen = () => {
     category: '',
   });
 
-  const handleAddAlert = () => {
+  // Load alerts from AsyncStorage on component mount
+  useEffect(() => {
+    const loadAlerts = async () => {
+      try {
+        const storedAlerts = await AsyncStorage.getItem('weatherAlerts');
+        if (storedAlerts) {
+          setAlerts(JSON.parse(storedAlerts));
+        }
+      } catch (error) {
+        console.error('Error loading alerts from storage:', error);
+      }
+    };
+
+    loadAlerts();
+  }, []);
+
+  // Save new alert to AsyncStorage and state
+  const handleAddAlert = async () => {
     const newId = (alerts.length + 1).toString();
-    setAlerts([...alerts, { ...newAlert, id: newId }]);
+    const updatedAlerts = [...alerts, { ...newAlert, id: newId }];
+    setAlerts(updatedAlerts);
+
+    try {
+      await AsyncStorage.setItem('weatherAlerts', JSON.stringify(updatedAlerts));
+    } catch (error) {
+      console.error('Error saving alerts:', error);
+    }
+
     setShowModal(false);
     setNewAlert({
       id: '',
@@ -58,7 +82,6 @@ const WeatherAlertsScreen = () => {
       <Text style={styles.alertDate}>Date: {item.date}</Text>
       <Text style={styles.alertSeverity}>Severity: {item.severity}</Text>
       <Text style={styles.alertDescription}>{item.description}</Text>
-
       <TouchableOpacity
         style={styles.viewDetailsButton}
         onPress={() => {
@@ -74,14 +97,10 @@ const WeatherAlertsScreen = () => {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Weather Alerts</Text>
 
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => setShowModal(true)}
-      >
+      <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
         <Text style={styles.addButtonText}>Add Weather Alert</Text>
       </TouchableOpacity>
 
-    
       <View style={styles.filterContainer}>
         <TouchableOpacity style={styles.filterButton}>
           <Text style={styles.filterButtonText}>All</Text>
@@ -103,7 +122,6 @@ const WeatherAlertsScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.alertList}
       />
-
 
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={styles.modalBackground}>
@@ -147,7 +165,6 @@ const WeatherAlertsScreen = () => {
             />
 
             <Button color="#026338" title="Add Alert" onPress={handleAddAlert} />
-       
           </View>
         </View>
       </Modal>
@@ -222,7 +239,7 @@ const styles = StyleSheet.create({
   },
   alertSeverity: {
     fontSize: 14,
-    color: '#ff5722', 
+    color: '#ff5722',
     marginTop: 5,
   },
   alertDescription: {

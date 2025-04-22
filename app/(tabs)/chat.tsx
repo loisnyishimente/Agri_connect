@@ -1,4 +1,3 @@
-// ChatScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -112,7 +111,7 @@ const ChatScreen: React.FC = () => {
           <TouchableOpacity onPress={handleNewChat}>
             <Ionicons name="add-circle-outline" size={30} color="white" />
           </TouchableOpacity>
-          <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" />
+          <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" style={{ marginLeft: 15 }} />
         </View>
       </View>
       <FlatList
@@ -125,10 +124,7 @@ const ChatScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -172,7 +168,6 @@ const styles = StyleSheet.create({
   lastMessage: {
     fontSize: 14,
     color: '#666',
-    marginTop: 2,
   },
   rightSection: {
     alignItems: 'flex-end',
@@ -182,16 +177,15 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   unreadBadge: {
-    backgroundColor: '#2E7D32',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginTop: 5,
+    backgroundColor: '#026338',
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginTop: 4,
   },
   unreadText: {
-    color: '#FFF',
+    color: 'white',
     fontSize: 12,
-    fontWeight: 'bold',
   },
 });
 
